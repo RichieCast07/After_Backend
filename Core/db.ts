@@ -1,5 +1,5 @@
-import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
+import mysql, { type ResultSetHeader, type RowDataPacket } from 'mysql2/promise';
 
 dotenv.config();
 
@@ -14,7 +14,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-async function testConnection() {
+async function testConnection(): Promise<string | null> {
   try {
     const conn = await pool.getConnection();
     conn.release();
@@ -24,14 +24,14 @@ async function testConnection() {
   }
 }
 
-async function executePreparedQuery(query: string, params: any[] = []) {
+async function executePreparedQuery(query: string, params: any[] = []): Promise<RowDataPacket[] | ResultSetHeader> {
   const [result] = await pool.execute(query, params);
-  return result;
+  return result as RowDataPacket[] | ResultSetHeader;
 }
 
-async function fetchRows(query: string, params: any[] = []) {
+async function fetchRows(query: string, params: any[] = []): Promise<RowDataPacket[]> {
   const [rows] = await pool.execute(query, params);
-  return rows;
+  return rows as RowDataPacket[];
 }
 
 export default {

@@ -24,9 +24,6 @@ export class InMemoryUserRepository extends UserRepository {
         return (this.users.find(user => user.id === id) as User) || null;
     }
 
-    async getUserByEmail(email: string): Promise<User | null> {
-        return (this.users.find(user => user.email === email) as User) || null;
-    }
 
     async deleteUsers(id: number): Promise<boolean> {
         const index = this.users.findIndex(user => user.id === id);
@@ -35,6 +32,10 @@ export class InMemoryUserRepository extends UserRepository {
             return true;
         }
         return false;
+    }
+
+    async getUserByUsername(username: string): Promise<User | null> {
+        return (this.users.find(user => user.username === username) as User) || null;
     }
 
     async putUsers(id: number, updatedUser: Partial<User>): Promise<User | null> {
@@ -46,26 +47,23 @@ export class InMemoryUserRepository extends UserRepository {
         return null;
     }
 
-    async loginUser(email: string, password: string): Promise<User | null> {
-        const user = this.users.find(user => user.email === email);
-        if (!user || !user.password) return null;
+    async loginUser(username: string, password: string): Promise<User | null> {
+        const user = this.users.find(user => user.username === username);
+        if (!user || !user.password_hash) return null;
         
-        const match = await bcrypt.compare(password, user.password);
+        const match = await bcrypt.compare(password, user.password_hash);
         return match ? (user as User) : null;
     }
 
     async registerUser(user: User): Promise<any> {
-        const hashed = await bcrypt.hash(user.password, 10);
+        const hashed = await bcrypt.hash(user.password_hash, 10);
         const newUser: InMemoryUser = {
             id: this.nextId++,
             username: user.username,
-            email: user.email,
-            password: hashed,
-            personaID: user.personaID,
-            hotelID: user.hotelID,
-            rol: user.rol,
+            password_hash: hashed,
+            rol_id: user.rol_id,
             activo: user.activo,
-            fechaRegistro: user.fechaRegistro || new Date()
+            fecha_creacion: user.fecha_creacion
         };
         this.users.push(newUser);
         return newUser;

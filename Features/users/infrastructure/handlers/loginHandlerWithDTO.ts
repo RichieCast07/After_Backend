@@ -37,14 +37,15 @@ export class LoginHandlerWithDTO {
             }
 
             // 3. Ejecutar caso de uso
-            const { token, user } = await this.loginUseCase.execute(dto.email, dto.password);
+            const { token, user } = await this.loginUseCase.execute(dto.username, dto.password);
 
             // 4. Construir respuesta usando LoginResponseDTO
             const response: LoginResponseDTO = {
                 token,
                 message: 'Login successful',
-                userID: user.userID,
-                userRol: user.rol
+                user_id: user.id,
+                rol_id: user.rol_id,
+                username: user.username
             };
 
             // 5. Retornar respuesta

@@ -1,10 +1,9 @@
 export interface UserResponseDTO {
-    userID: number;
-    personaID: number;
-    hotelID: number;
-    email: string;
+    id: number
+    nombre_completo: string;
+    telefono: number;
     username: string;
-    rol: string;
+    rol_id: number;
     activo: boolean;
-    fechaRegistro: Date;
+    fecha_creacion: Date;
 }

@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
 import type { DeleteUserHandlerWithDTO } from "./handlers/deleteUserHandlerWithDTO.js";
-import type { GetUserByEmailHandlerWithDTO } from "./handlers/getUserByEmailHandlerWithDTO.js";
 import type { GetUserByIDHandlerWithDTO } from "./handlers/getUserByIDHandlerWithDTO.js";
 import type { GetUsersHandlerWithDTO } from "./handlers/getUsersHandlerWithDTO.js";
 import type { LoginHandlerWithDTO } from "./handlers/loginHandlerWithDTO.js";
@@ -12,7 +11,6 @@ export class UserController {
     private readonly deleteController: DeleteUserHandlerWithDTO;
     private readonly getByIdController: GetUserByIDHandlerWithDTO;
     private readonly putController: PutUserHandlerWithDTO;
-    private readonly getByEmailController: GetUserByEmailHandlerWithDTO;
     private readonly registerController: RegisterHandlerWithDTO;
     private readonly loginController: LoginHandlerWithDTO;
 
@@ -21,7 +19,6 @@ export class UserController {
         deleteController: DeleteUserHandlerWithDTO,
         getByIdController: GetUserByIDHandlerWithDTO,
         putController: PutUserHandlerWithDTO,
-        getByEmailController: GetUserByEmailHandlerWithDTO,
         registerController: RegisterHandlerWithDTO,
         loginController: LoginHandlerWithDTO
     ) {
@@ -29,7 +26,6 @@ export class UserController {
         this.deleteController = deleteController;
         this.getByIdController = getByIdController;
         this.putController = putController;
-        this.getByEmailController = getByEmailController;
         this.registerController = registerController;
         this.loginController = loginController;
     }
@@ -50,10 +46,7 @@ export class UserController {
         return this.getByIdController.handle(req, res);
     }
 
-    getUserByEmail(req: Request, res: Response): Promise<void> {
-        return this.getByEmailController.handle(req, res);
-    }
-
+    
     loginUser(req: Request, res: Response): Promise<void> {
         return this.loginController.handle(req, res);
     }

@@ -2,12 +2,10 @@ import type { Application } from "express";
 import { LoginUserUseCase } from '../Application/authUseCases/loginUseCase.js';
 import { RegisterUserUseCase } from '../Application/authUseCases/registerUserUseCase.js';
 import { DeleteUserUseCase } from '../Application/userUseCases/deleteUserUseCase.js';
-import { GetUserByEmailUseCase } from '../Application/userUseCases/getUserByEmailUseCase.js';
 import { GetUsersByIdUseCase } from '../Application/userUseCases/getUserByIDUseCase.js';
 import { GetUsersUseCase } from '../Application/userUseCases/getUsersUseCase.js';
 import { PutUsersUseCase } from '../Application/userUseCases/putUserUseCase.js';
 import { DeleteUserHandlerWithDTO } from "./handlers/deleteUserHandlerWithDTO.js";
-import { GetUserByEmailHandlerWithDTO } from "./handlers/getUserByEmailHandlerWithDTO.js";
 import { GetUserByIDHandlerWithDTO } from "./handlers/getUserByIDHandlerWithDTO.js";
 import { GetUsersHandlerWithDTO } from "./handlers/getUsersHandlerWithDTO.js";
 import { LoginHandlerWithDTO } from "./handlers/index.js";
@@ -35,7 +33,6 @@ export function init_users(app: Application): void {
     const deleteUserUsecase = new DeleteUserUseCase({ userRepository: repository });
     const getUserByIdUsecase = new GetUsersByIdUseCase({ userRepository: repository });
     const putUserUsecase = new PutUsersUseCase({ usersRepository: repository });
-    const getUserByEmailUsecase = new GetUserByEmailUseCase(repository);
     const loginUserUsecase = new LoginUserUseCase(repository);
     const registerUserUseCase = new RegisterUserUseCase(repository);
 
@@ -44,7 +41,6 @@ export function init_users(app: Application): void {
     const deleteUserController = new DeleteUserHandlerWithDTO(deleteUserUsecase);
     const getUserByIdController = new GetUserByIDHandlerWithDTO(getUserByIdUsecase);
     const putUserController = new PutUserHandlerWithDTO(putUserUsecase);
-    const getUserByEmailController = new GetUserByEmailHandlerWithDTO(getUserByEmailUsecase);
     const registerUserController = new RegisterHandlerWithDTO(registerUserUseCase);
     const loginUserController = new LoginHandlerWithDTO(loginUserUsecase);
 
@@ -54,7 +50,6 @@ export function init_users(app: Application): void {
         deleteUserController,
         getUserByIdController,
         putUserController,
-        getUserByEmailController,
         registerUserController,
         loginUserController
     );

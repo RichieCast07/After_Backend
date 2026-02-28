@@ -11,7 +11,7 @@ export abstract class UserRepository {
 
     abstract getUsersById(userId: number): Promise<User | null>;
 
-    abstract getUserByEmail(email: string): Promise<User | null>;
+    abstract getUserByUsername(username: string): Promise<User | null>;
 
     abstract deleteUsers(userId: number): Promise<any>;
 

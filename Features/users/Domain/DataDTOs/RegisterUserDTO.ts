@@ -1,23 +1,21 @@
 import type { User } from "../Data/user.js";
 
 export interface RegisterUserDTO {
-    email: string;
-    password: string;
     username: string;
-    personaID: number;
-    hotelID: number;
-    rol: 'admin' | 'user' | 'guest'; // Tipos literales para roles válidos
+    telefono: number;
+    rol_id: number;
+    password: string;
+    nombre_completo: string;
 }
 export function fromRegisterDTOToUser(dto: RegisterUserDTO): User {
     return {
-        userID: 0, // Se asignará en la BD
-        personaID: dto.personaID,
-        hotelID: dto.hotelID,
-        email: dto.email,
-        password: dto.password,
         username: dto.username,
-        rol: dto.rol,
+        telefono: dto.telefono,
+        rol_id: dto.rol_id,
         activo: true,
-        fechaRegistro: new Date()
+        fecha_creacion: new Date(),
+        password_hash: dto.password,
+        id: 0, // This will be set by the database when the user is created
+        nombre_completo: dto.nombre_completo
     };
 }

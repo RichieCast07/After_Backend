@@ -3,14 +3,13 @@ import type { User } from "../user.js";
 
 export function toUserResponseDTO(user: User): UserResponseDTO {
     return {
-        userID: user.userID,
-        personaID: user.personaID,
-        hotelID: user.hotelID,
-        email: user.email,
-        username: user.username,
-        rol: user.rol,
+        id: user.id,
+        nombre_completo: user.nombre_completo,
+        telefono: user.telefono,
+        rol_id: user.rol_id,
         activo: user.activo,
-        fechaRegistro: user.fechaRegistro
+        fecha_creacion: user.fecha_creacion,
+        username: user.username
     };
 }
 

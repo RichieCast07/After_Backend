@@ -1,11 +1,10 @@
 export interface User {
-    userID: number;
-    personaID: number;
-    hotelID: number;
-    email: string;
-    password: string;
+    id: number;
+    nombre_completo: string;
+    password_hash: string;
     username: string;
-    rol: string;
+    telefono: number;
+    rol_id: number;
     activo: boolean;
-    fechaRegistro: Date;
+    fecha_creacion: Date;
 }

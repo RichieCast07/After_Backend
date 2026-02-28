@@ -10,10 +10,10 @@ export class RegisterUserUseCase {
     }
 
     async execute(userData: User): Promise<any> {
-        const existingUser = await this.userRepository.getUserByEmail(userData.email);
+        const existingUser = await this.userRepository.getUserByUsername(userData.username);
         
         if (existingUser) {
-            throw HttpErrors.conflict('Email already in use');
+            throw HttpErrors.conflict('Username already in use');
         }
         
         return this.userRepository.registerUser(userData);

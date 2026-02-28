@@ -13,7 +13,6 @@ export default function productRoutes(controller: UserController): Router {
     router.use(authMiddleware);
     router.get('/', (req: Request, res: Response) => controller.getUsers(req, res));
     router.get('/:id', (req: Request, res: Response) => controller.getUsersById(req, res));
-    router.get('/email/:email', (req: Request, res: Response) => controller.getUserByEmail(req, res));
     router.put('/:id', (req: Request, res: Response) => controller.putUsers(req, res));
     router.delete('/:id', (req: Request, res: Response) => controller.deleteUsers(req, res));
 

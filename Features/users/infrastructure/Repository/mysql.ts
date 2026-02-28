@@ -26,9 +26,9 @@ export class MySQL extends UserRepository {
     }
 
     async putUsers(id: number, userData: User): Promise<any> {
-        const query = 'UPDATE `user` SET password = ?, username = ? WHERE userID = ?';
+        const query = 'UPDATE `user` SET password_hash = ?, username = ? WHERE userID = ?';
         try {
-            let passwordToSave = userData.password;
+            let passwordToSave = userData.password_hash;
             if (passwordToSave !== undefined && passwordToSave !== null) {
                 passwordToSave = await bcrypt.hash(passwordToSave, 10);
             }
@@ -68,27 +68,27 @@ export class MySQL extends UserRepository {
         }
     }
 
-    async getUserByEmail(email: string): Promise<User | null> {
-        const query = 'SELECT * FROM `user` WHERE email = ?';
+    async getUserByEmail(username: string): Promise<User | null> {
+        const query = 'SELECT * FROM `usuarios` WHERE username = ?';
         try {
-            const rows = await db.executePreparedQuery(query, [email]) as RowDataPacket[];
+            const rows = await db.executePreparedQuery(query, [username]) as RowDataPacket[];
             return (rows[0] as User) || null;
         } catch (err) {
             if (err instanceof Error) {
-                throw new Error('Error fetching user by email: ' + err.message);
+                throw new Error('Error fetching user by username: ' + err.message);
             }
-            throw new Error('Error fetching user by email: ' + String(err));
+            throw new Error('Error fetching user by username: ' + String(err));
         }
     }
 
-    async loginUser(email: string, password: string): Promise<User | null> {
-        const query = 'SELECT * FROM `user` WHERE email = ?';
+    async loginUser(username: string, password: string): Promise<User | null> {
+        const query = 'SELECT * FROM `usuarios` WHERE username = ?';
         try {
-            const rows = await db.executePreparedQuery(query, [email]) as RowDataPacket[];
+            const rows = await db.executePreparedQuery(query, [username]) as RowDataPacket[];
             const user = rows[0] as User | undefined;
             if (!user) return null;
             
-            const hashed = user.password;
+            const hashed = user.password_hash;
             const match = await bcrypt.compare(password, hashed);
             return match ? user : null;
         } catch (err) {
@@ -99,18 +99,30 @@ export class MySQL extends UserRepository {
         }
     }
 
+    async getUserByUsername(username: string): Promise<User | null> {
+        const query = 'SELECT * FROM `usuarios` WHERE username = ?';
+        try {
+            const rows = await db.executePreparedQuery(query, [username]) as RowDataPacket[];
+            return (rows[0] as User) || null;
+        } catch (err) {
+            if (err instanceof Error) {
+                throw new Error('Error fetching user by username: ' + err.message);
+            }
+            throw new Error('Error fetching user by username: ' + String(err));
+        }
+    }
+
     async registerUser(user: User): Promise<any> {
-        const query = 'INSERT INTO `user` (personaID, hotelID, email, password, username, rol, activo) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const query = 'INSERT INTO `usuarios` (nombre_completo, telefono, username, password_hash, rol_id, activo) VALUES (?, ?, ?, ?, ?, ?)';
         try {
             const saltRounds = 10;
-            const hashed = await bcrypt.hash(user.password, saltRounds);
+            const hashed = await bcrypt.hash(user.password_hash, saltRounds);
             const result = await db.executePreparedQuery(query, [
-                user.personaID,
-                user.hotelID,
-                user.email,
-                hashed,
+                user.nombre_completo,
+                user.telefono,
                 user.username,
-                user.rol,
+                hashed,
+                user.rol_id,
                 user.activo
             ]) as ResultSetHeader;
             
@@ -118,8 +130,10 @@ export class MySQL extends UserRepository {
             if (insertId) {
                 return { 
                     id: insertId, 
-                    name: user.username, 
-                    email: user.email 
+                    nombre_completo: user.nombre_completo, 
+                    telefono: user.telefono,
+                    username: user.username,
+                    rol_id: user.rol_id
                 };
             }
             return result;

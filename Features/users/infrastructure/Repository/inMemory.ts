@@ -16,6 +16,10 @@ export class InMemoryUserRepository extends UserRepository {
         this.nextId = 1;
     }
 
+    async getUsersByRole(rolId: number): Promise<User[]> {
+        return this.users.filter(user => user.rol_id === rolId) as User[];
+    }
+
     async getUsers(): Promise<User[]> {
         return this.users.slice() as User[];
     }

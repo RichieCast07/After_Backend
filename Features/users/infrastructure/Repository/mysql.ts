@@ -12,8 +12,21 @@ export class MySQL extends UserRepository {
         this.pool = db.pool;
     }
 
+    async getUsersByRole(rolId: number): Promise<User[]> {
+        const query = 'SELECT * FROM `usuarios` WHERE rol_id = ?';  
+        try {
+            const rows = await db.executePreparedQuery(query, [rolId]);
+            return rows as User[];
+        } catch (err) {
+            if (err instanceof Error) {
+                throw new Error('Error fetching users by role: ' + err.message);
+            }
+            throw new Error('Error fetching users by role: ' + String(err));
+        }
+    }
+
     async getUsers(): Promise<User[]> {
-        const query = 'SELECT * FROM `user`';
+        const query = 'SELECT * FROM `usuarios`';
         try {
             const rows = await db.fetchRows(query);
             return rows as User[];
@@ -26,13 +39,13 @@ export class MySQL extends UserRepository {
     }
 
     async putUsers(id: number, userData: User): Promise<any> {
-        const query = 'UPDATE `user` SET password_hash = ?, username = ? WHERE userID = ?';
+        const query = 'UPDATE `usuarios` SET password_hash = ?, username = ?, nombre_completo = ?, telefono = ?, activo = ? WHERE id = ?';
         try {
             let passwordToSave = userData.password_hash;
             if (passwordToSave !== undefined && passwordToSave !== null) {
                 passwordToSave = await bcrypt.hash(passwordToSave, 10);
             }
-            const rows = await db.fetchRows(query, [passwordToSave, userData.username, id]);
+            const rows = await db.fetchRows(query, [passwordToSave, userData.username, userData.nombre_completo, userData.telefono, userData.activo, id]);
             return rows;
         } catch (err) {
             if (err instanceof Error) {
@@ -43,7 +56,7 @@ export class MySQL extends UserRepository {
     }
 
     async deleteUsers(id: number): Promise<any> {
-        const query = 'DELETE FROM `user` WHERE userID = ?';
+        const query = 'DELETE FROM `usuarios` WHERE id = ?';
         try {
             const rows = await db.fetchRows(query, [id]);
             return rows;
@@ -56,7 +69,7 @@ export class MySQL extends UserRepository {
     }
 
     async getUsersById(id: number): Promise<User | null> {
-        const query = 'SELECT * FROM `user` WHERE userID = ?';
+        const query = 'SELECT * FROM `usuarios` WHERE id = ?';
         try {
             const rows = await db.executePreparedQuery(query, [id]) as RowDataPacket[];
             return (rows[0] as User) || null;
@@ -65,19 +78,6 @@ export class MySQL extends UserRepository {
                 throw new Error('Error fetching user by ID: ' + err.message);
             }
             throw new Error('Error fetching user by ID: ' + String(err));
-        }
-    }
-
-    async getUserByEmail(username: string): Promise<User | null> {
-        const query = 'SELECT * FROM `usuarios` WHERE username = ?';
-        try {
-            const rows = await db.executePreparedQuery(query, [username]) as RowDataPacket[];
-            return (rows[0] as User) || null;
-        } catch (err) {
-            if (err instanceof Error) {
-                throw new Error('Error fetching user by username: ' + err.message);
-            }
-            throw new Error('Error fetching user by username: ' + String(err));
         }
     }
 

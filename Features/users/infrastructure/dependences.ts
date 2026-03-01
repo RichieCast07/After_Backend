@@ -15,6 +15,8 @@ import { InMemoryUserRepository } from './Repository/inMemory.js';
 import { MySQL } from './Repository/mysql.js';
 import productRoutes from './Routes/usersRoutes.js';
 import { UserController } from './userController.js';
+import { GetUsersByRolUseCase } from "../Application/userUseCases/getUsesByRol.js";
+import { GetUserByRolHandlerWithDTO } from "./handlers/getUserByRol.js";
 
 export function init_users(app: Application): void {
     // Repository - choose adapter by env (USE_IN_MEMORY=true or NODE_ENV=test to use memory)
@@ -35,6 +37,7 @@ export function init_users(app: Application): void {
     const putUserUsecase = new PutUsersUseCase({ usersRepository: repository });
     const loginUserUsecase = new LoginUserUseCase(repository);
     const registerUserUseCase = new RegisterUserUseCase(repository);
+    const getUsersByRolUseCase = new GetUsersByRolUseCase(repository);
 
     // Handlers
     const getUsersController = new GetUsersHandlerWithDTO(getUsersUseCase);
@@ -43,6 +46,7 @@ export function init_users(app: Application): void {
     const putUserController = new PutUserHandlerWithDTO(putUserUsecase);
     const registerUserController = new RegisterHandlerWithDTO(registerUserUseCase);
     const loginUserController = new LoginHandlerWithDTO(loginUserUsecase);
+    const getUserByRolController = new GetUserByRolHandlerWithDTO(getUsersByRolUseCase);
 
     // Controller
     const userController = new UserController(
@@ -51,7 +55,8 @@ export function init_users(app: Application): void {
         getUserByIdController,
         putUserController,
         registerUserController,
-        loginUserController
+        loginUserController,
+        getUserByRolController
     );
 
     // Routes

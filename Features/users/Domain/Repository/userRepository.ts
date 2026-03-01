@@ -5,6 +5,8 @@ import type { User } from "../Data/user.js";
  * Implementations (adapters) should implement these methods.
  */
 export abstract class UserRepository {
+    abstract getUsersByRole(rolId: number): Promise<User[]>;
+
     abstract getUsers(): Promise<User[]>;
 
     abstract putUsers(id: number, user: User): Promise<any>;

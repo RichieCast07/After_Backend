@@ -5,6 +5,7 @@ import type { GetUsersHandlerWithDTO } from "./handlers/getUsersHandlerWithDTO.j
 import type { LoginHandlerWithDTO } from "./handlers/loginHandlerWithDTO.js";
 import type { PutUserHandlerWithDTO } from "./handlers/putUserHandlerWithDTO.js";
 import type { RegisterHandlerWithDTO } from "./handlers/registerHandlerWithDTO.js";
+import type { GetUserByRolHandlerWithDTO } from "./handlers/getUserByRol.js";
 
 export class UserController {
     private readonly getController: GetUsersHandlerWithDTO;
@@ -13,6 +14,7 @@ export class UserController {
     private readonly putController: PutUserHandlerWithDTO;
     private readonly registerController: RegisterHandlerWithDTO;
     private readonly loginController: LoginHandlerWithDTO;
+    private readonly getByRolController: GetUserByRolHandlerWithDTO;
 
     constructor(
         getController: GetUsersHandlerWithDTO,
@@ -20,7 +22,8 @@ export class UserController {
         getByIdController: GetUserByIDHandlerWithDTO,
         putController: PutUserHandlerWithDTO,
         registerController: RegisterHandlerWithDTO,
-        loginController: LoginHandlerWithDTO
+        loginController: LoginHandlerWithDTO,
+        getByRolController: GetUserByRolHandlerWithDTO
     ) {
         this.getController = getController;
         this.deleteController = deleteController;
@@ -28,10 +31,15 @@ export class UserController {
         this.putController = putController;
         this.registerController = registerController;
         this.loginController = loginController;
+        this.getByRolController = getByRolController;
     }
 
     getUsers(req: Request, res: Response): Promise<void> {
         return this.getController.handle(req, res);
+    }
+
+    getUsersByRole(req: Request, res: Response): Promise<void> {
+        return this.getByRolController.handle(req, res);
     }
 
     putUsers(req: Request, res: Response): Promise<void> {

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { HttpErrors } from "../../Domain/Data/errors.js";
 import type { User } from "../../Domain/Data/user.js";
 import type { UserRepository } from "../../Domain/Repository/userRepository.js";
+import { HttpErrors } from '../../../../Core/dberrors.js';
 
 export class LoginUserUseCase {
     private readonly userRepository: UserRepository;

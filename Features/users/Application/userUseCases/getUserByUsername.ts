@@ -1,5 +1,5 @@
 
-import { HttpErrors } from "../../Domain/Data/errors.js";
+import { HttpErrors } from "../../../../Core/dberrors.js";
 import type { User } from "../../Domain/Data/user.js";
 import type { UserRepository } from "../../Domain/Repository/userRepository.js";
 

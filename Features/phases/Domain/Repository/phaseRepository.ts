@@ -12,4 +12,6 @@ export abstract class PhaseRepository {
     abstract updatePhase(phaseId: number, phase: UpdatePhaseDTO): Promise<Phase>;
 
     abstract togglePhaseStatus(phaseId: number): Promise<Phase>;
+
+    abstract deletePhase(phaseId: number): Promise<void>;
 }

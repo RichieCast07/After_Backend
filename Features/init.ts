@@ -92,7 +92,8 @@ export function initFeatures(app: Application): void {
         getEventByIdHandler,
         createEventHandler,
         updateEventHandler,
-        toggleEventStatusHandler
+        toggleEventStatusHandler,
+        eventRepository
     );
 
     const getPhasesByEventIdUseCase = new GetPhasesByEventIdUseCase(phaseRepository);
@@ -109,7 +110,8 @@ export function initFeatures(app: Application): void {
         getPhasesByEventIdHandler,
         createPhaseHandler,
         updatePhaseHandler,
-        togglePhaseStatusHandler
+        togglePhaseStatusHandler,
+        phaseRepository
     );
 
     const getClientsUseCase = new GetClientsUseCase(clientRepository);
@@ -126,7 +128,8 @@ export function initFeatures(app: Application): void {
         getClientsHandler,
         getClientByIdHandler,
         searchClientByPhoneHandler,
-        createClientHandler
+        createClientHandler,
+        clientRepository
     );
 
     const sellTicketUseCase = new SellTicketUseCase(ticketRepository);

@@ -3,3 +3,15 @@ dist
 build
 .env
 package-lock.json
+
+testAllEndpoints.ts
+testResults.txt
+testOutput.log
+test*.log
+*.test.ts
+
+docs/*.md
+*.md.txt
+ENDPOINTS.md
+API_DOCS.md
+TEST_REPORT.md

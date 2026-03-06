@@ -1,9 +1,12 @@
 import express from "express";
 import type { Request, Response } from "express";
+import dotenv from 'dotenv';
 import db from "./Core/db.js";
 import corsM from "./Core/Middleware/cors.js";
 import { init_users } from "./Features/users/infrastructure/dependences.js";
 import { initFeatures } from "./Features/init.js";
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;

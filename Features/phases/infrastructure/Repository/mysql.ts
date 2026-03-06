@@ -109,4 +109,16 @@ export class MySQLPhaseRepository extends PhaseRepository {
             connection.release();
         }
     }
+
+    async deletePhase(phaseId: number): Promise<void> {
+        const connection = await db.pool.getConnection();
+        try {
+            const existing = await this.getPhaseById(phaseId);
+            if (!existing) throw new Error("Phase not found");
+
+            await connection.query("DELETE FROM fases WHERE id = ?", [phaseId]);
+        } finally {
+            connection.release();
+        }
+    }
 }

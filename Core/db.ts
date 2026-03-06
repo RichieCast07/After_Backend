@@ -12,9 +12,6 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: parseInt(process.env.DB_CONN_LIMIT || '10', 10),
   queueLimit: 0,
-  authPlugins: {
-    mysql_native_password: () => () => process.env.DB_PASS || 'Passw0rd!2026',
-  },
 });
 
 async function testConnection(): Promise<string | null> {

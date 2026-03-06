@@ -12,4 +12,6 @@ export abstract class EventRepository {
     abstract updateEvent(eventId: number, event: UpdateEventDTO): Promise<Event>;
 
     abstract toggleEventStatus(eventId: number): Promise<Event>;
+
+    abstract deleteEvent(eventId: number): Promise<void>;
 }

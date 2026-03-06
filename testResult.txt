@@ -1,0 +1,629 @@
+[dotenv@17.3.1] injecting env (7) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+═══════════════════════════════════════════════════════════
+🚀 INICIANDO PRUEBAS DE TODOS LOS ENDPOINTS
+═══════════════════════════════════════════════════════════
+
+
+📍 PRUEBAS DE AUTENTICACIÓN
+═══════════════════════════════════════════════════════════
+
+1️⃣  Registrar Admin
+
+✏️  [POST] /users/auth/register
+📊 Status: 201
+✅ Response: {
+  "success": true,
+  "message": "User registered successfully",
+  "data": {
+    "id": 15,
+    "nombre_completo": "Admin Test",
+    "telefono": 5559031515,
+    "rol_id": 1,
+    "username": "admin_1772782667512"
+  }
+}
+
+2️⃣  Login como Admin
+
+✏️  [POST] /users/auth/login
+📊 Status: 200
+✅ Response: {
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiYWRtaW5fMTc3Mjc4MjY2NzUxMiIsImlhdCI6MTc3Mjc4MjY2OCwiZXhwIjoxNzcyNzg2MjY4fQ.mjPS-W11Aph35tjknokJA4t-8NJZAwrIM8CMZKz5Muw",
+  "message": "Login successful",
+  "user_id": 15,
+  "rol_id": 1,
+  "username": "admin_1772782667512"
+}
+✅ Token obtenido: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+
+
+📍 PRUEBAS DE USUARIOS
+═══════════════════════════════════════════════════════════
+
+1️⃣  Crear nuevo RP
+
+✏️  [POST] /users
+📊 Status: 201
+✅ Response: {
+  "success": true,
+  "message": "User registered successfully",
+  "data": {
+    "id": 16,
+    "nombre_completo": "RP Test Usuario",
+    "telefono": 5559818215,
+    "rol_id": 2,
+    "username": "rp_1772782668093"
+  }
+}
+
+2️⃣  Listar todos los usuarios
+
+✏️  [GET] /users
+📊 Status: 200
+✅ Response: {
+  "success": true,
+  "count": 13,
+  "data": [
+    {
+      "id": 1,
+      "nombre_completo": "Carlos oswaldo",
+      "telefono": "123456789",
+      "rol_id": 1,
+      "activo": 0,
+      "fecha_creacion": "2026-03-01T04:16:28.000Z",
+      "username": "Arquitecto rol"
+    },
+    {
+      "id": 2,
+      "nombre_completo": "Miguel Angel Gutierrez Gomez",
+      "telefono": "9671905994",
+      "rol_id": 1,
+      "activo": 1,
+      "fecha_creacion": "2026-03-01T05:20:53.000Z",
+      "username": "Mike"
+    },
+    {
+      "id": 5,
+      "nombre_completo": "Miguel Angel Gutierrez Gomez",
+      "telefono": "9671905999",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-04T00:33:39.000Z",
+      "username": "rp1"
+    },
+    {
+      "id": 6,
+      "nombre_completo": "Richie Admin",
+      "telefono": "5559876543",
+      "rol_id": 1,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T08:02:57.000Z",
+      "username": "Richie"
+    },
+    {
+      "id": 7,
+      "nombre_completo": "Borrayes Mendoza",
+      "telefono": "5559876567",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T08:30:32.000Z",
+      "username": "Borrayes"
+    },
+    {
+      "id": 8,
+      "nombre_completo": "Admin Test",
+      "telefono": "5551111111",
+      "rol_id": 1,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T10:07:16.000Z",
+      "username": "admin_1772770037007"
+    },
+    {
+      "id": 10,
+      "nombre_completo": "Admin Test",
+      "telefono": "5559085012",
+      "rol_id": 1,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T10:08:33.000Z",
+      "username": "admin_1772770113834"
+    },
+    {
+      "id": 11,
+      "nombre_completo": "Admin Test",
+      "telefono": "5554806271",
+      "rol_id": 1,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T13:15:33.000Z",
+      "username": "admin_1772781333595"
+    },
+    {
+      "id": 12,
+      "nombre_completo": "RP Test Usuario",
+      "telefono": "5557126541",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T13:15:34.000Z",
+      "username": "rp_1772781334977"
+    },
+    {
+      "id": 13,
+      "nombre_completo": "Admin Test",
+      "telefono": "5559882175",
+      "rol_id": 1,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T13:24:21.000Z",
+      "username": "admin_1772781862684"
+    },
+    {
+      "id": 14,
+      "nombre_completo": "RP Test Usuario",
+      "telefono": "5551482883",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T13:24:22.000Z",
+      "username": "rp_1772781863244"
+    },
+    {
+      "id": 15,
+      "nombre_completo": "Admin Test",
+      "telefono": "5559031515",
+      "rol_id": 1,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T13:37:46.000Z",
+      "username": "admin_1772782667512"
+    },
+    {
+      "id": 16,
+      "nombre_completo": "RP Test Usuario",
+      "telefono": "5559818215",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T13:37:47.000Z",
+      "username": "rp_1772782668093"
+    }
+  ]
+}
+
+3️⃣  Obtener usuario por ID
+
+✏️  [GET] /users/1
+📊 Status: 200
+✅ Response: {
+  "success": true,
+  "data": {
+    "id": 1,
+    "nombre_completo": "Carlos oswaldo",
+    "telefono": "123456789",
+    "rol_id": 1,
+    "activo": 0,
+    "fecha_creacion": "2026-03-01T04:16:28.000Z",
+    "username": "Arquitecto rol"
+  }
+}
+
+4️⃣  Listar RPs (rol_id=2)
+
+✏️  [GET] /users/role/2
+📊 Status: 200
+✅ Response: {
+  "success": true,
+  "data": [
+    {
+      "id": 5,
+      "nombre_completo": "Miguel Angel Gutierrez Gomez",
+      "telefono": "9671905999",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-04T00:33:39.000Z",
+      "username": "rp1"
+    },
+    {
+      "id": 7,
+      "nombre_completo": "Borrayes Mendoza",
+      "telefono": "5559876567",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T08:30:32.000Z",
+      "username": "Borrayes"
+    },
+    {
+      "id": 12,
+      "nombre_completo": "RP Test Usuario",
+      "telefono": "5557126541",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T13:15:34.000Z",
+      "username": "rp_1772781334977"
+    },
+    {
+      "id": 14,
+      "nombre_completo": "RP Test Usuario",
+      "telefono": "5551482883",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T13:24:22.000Z",
+      "username": "rp_1772781863244"
+    },
+    {
+      "id": 16,
+      "nombre_completo": "RP Test Usuario",
+      "telefono": "5559818215",
+      "rol_id": 2,
+      "activo": 1,
+      "fecha_creacion": "2026-03-06T13:37:47.000Z",
+      "username": "rp_1772782668093"
+    }
+  ]
+}
+
+
+📍 PRUEBAS DE EVENTOS
+═══════════════════════════════════════════════════════════
+
+1️⃣  Crear nuevo evento
+
+✏️  [POST] /events
+📊 Status: 201
+✅ Response: {
+  "id": 4,
+  "nombre": "Evento Test 1772782668887",
+  "fecha_evento": "2026-03-06T07:37:49.000Z",
+  "lugar": "Sala Principal",
+  "activo": 1,
+  "fecha_creacion": "2026-03-06T13:37:47.000Z"
+}
+✅ Evento creado: 4
+
+2️⃣  Listar todos los eventos
+
+✏️  [GET] /events
+📊 Status: 200
+✅ Response: [
+  {
+    "id": 1,
+    "nombre": "Evento Actualizado 1772770115544",
+    "fecha_evento": "2026-03-06T04:08:35.000Z",
+    "lugar": "Sala Actualizada",
+    "activo": 0,
+    "fecha_creacion": "2026-03-06T10:08:33.000Z"
+  },
+  {
+    "id": 2,
+    "nombre": "Evento Actualizado 1772781336710",
+    "fecha_evento": "2026-03-06T07:15:36.000Z",
+    "lugar": "Sala Actualizada",
+    "activo": 0,
+    "fecha_creacion": "2026-03-06T13:15:34.000Z"
+  },
+  {
+    "id": 3,
+    "nombre": "Evento Actualizado 1772781864672",
+    "fecha_evento": "2026-03-06T07:24:24.000Z",
+    "lugar": "Sala Actualizada",
+    "activo": 0,
+    "fecha_creacion": "2026-03-06T13:24:22.000Z"
+  },
+  {
+    "id": 4,
+    "nombre": "Evento Test 1772782668887",
+    "fecha_evento": "2026-03-06T07:37:49.000Z",
+    "lugar": "Sala Principal",
+    "activo": 1,
+    "fecha_creacion": "2026-03-06T13:37:47.000Z"
+  }
+]
+
+3️⃣  Obtener evento por ID
+
+✏️  [GET] /events/4
+📊 Status: 200
+✅ Response: {
+  "id": 4,
+  "nombre": "Evento Test 1772782668887",
+  "fecha_evento": "2026-03-06T07:37:49.000Z",
+  "lugar": "Sala Principal",
+  "activo": 1,
+  "fecha_creacion": "2026-03-06T13:37:47.000Z"
+}
+
+4️⃣  Actualizar evento
+
+✏️  [PUT] /events/4
+📊 Status: 200
+✅ Response: {
+  "id": 4,
+  "nombre": "Evento Actualizado 1772782669527",
+  "fecha_evento": "2026-03-06T07:37:49.000Z",
+  "lugar": "Sala Actualizada",
+  "activo": 1,
+  "fecha_creacion": "2026-03-06T13:37:47.000Z"
+}
+
+5️⃣  Toggle estado del evento
+
+✏️  [PATCH] /events/4/toggle
+📊 Status: 200
+✅ Response: {
+  "id": 4,
+  "nombre": "Evento Actualizado 1772782669527",
+  "fecha_evento": "2026-03-06T07:37:49.000Z",
+  "lugar": "Sala Actualizada",
+  "activo": 0,
+  "fecha_creacion": "2026-03-06T13:37:47.000Z"
+}
+
+6️⃣  Eliminar evento
+
+✏️  [DELETE] /events/4
+📊 Status: 404
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot DELETE /events/4</pre>
+</body>
+</html>
+
+
+
+📍 PRUEBAS DE FASES
+═══════════════════════════════════════════════════════════
+
+1️⃣  Crear nueva fase
+
+✏️  [POST] /events/4/phases
+📊 Status: 201
+✅ Response: {
+  "id": 4,
+  "evento_id": 4,
+  "nombre": "Fase Test 1772782670011",
+  "precio": "150.00",
+  "fecha_inicio": "2026-03-06T07:37:50.000Z",
+  "fecha_fin": "2026-03-07T07:37:50.000Z",
+  "activa": 1
+}
+✅ Fase creada: 4
+
+2️⃣  Listar fases del evento
+
+✏️  [GET] /events/4/phases
+📊 Status: 200
+✅ Response: [
+  {
+    "id": 4,
+    "evento_id": 4,
+    "nombre": "Fase Test 1772782670011",
+    "precio": "150.00",
+    "fecha_inicio": "2026-03-06T07:37:50.000Z",
+    "fecha_fin": "2026-03-07T07:37:50.000Z",
+    "activa": 1
+  }
+]
+
+3️⃣  Actualizar fase
+
+✏️  [PUT] /events/4/phases/4
+📊 Status: 200
+✅ Response: {
+  "id": 4,
+  "evento_id": 4,
+  "nombre": "Fase Actualizada 1772782670286",
+  "precio": "200.00",
+  "fecha_inicio": "2026-03-06T07:37:50.000Z",
+  "fecha_fin": "2026-03-07T07:37:50.000Z",
+  "activa": 1
+}
+
+4️⃣  Toggle estado de fase
+
+✏️  [PATCH] /events/4/phases/4/toggle
+📊 Status: 200
+✅ Response: {
+  "id": 4,
+  "evento_id": 4,
+  "nombre": "Fase Actualizada 1772782670286",
+  "precio": "200.00",
+  "fecha_inicio": "2026-03-06T07:37:50.000Z",
+  "fecha_fin": "2026-03-07T07:37:50.000Z",
+  "activa": 0
+}
+
+5️⃣  Eliminar fase
+
+✏️  [DELETE] /events/4/phases/4
+📊 Status: 404
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot DELETE /events/4/phases/4</pre>
+</body>
+</html>
+
+
+
+📍 PRUEBAS DE CLIENTES
+═══════════════════════════════════════════════════════════
+
+1️⃣  Crear nuevo cliente
+
+✏️  [POST] /clients
+📊 Status: 201
+✅ Response: {
+  "id": 4,
+  "nombre_completo": "Cliente Test 1772782670737",
+  "telefono": "5550611991",
+  "fecha_registro": "2026-03-06T13:37:49.000Z"
+}
+✅ Cliente creado: 4
+
+2️⃣  Listar todos los clientes
+
+✏️  [GET] /clients
+📊 Status: 200
+✅ Response: [
+  {
+    "id": 1,
+    "nombre_completo": "Cliente Test 1772770116772",
+    "telefono": "5556442074",
+    "fecha_registro": "2026-03-06T10:08:35.000Z"
+  },
+  {
+    "id": 2,
+    "nombre_completo": "Cliente Test 1772781343640",
+    "telefono": "5553645434",
+    "fecha_registro": "2026-03-06T13:15:42.000Z"
+  },
+  {
+    "id": 3,
+    "nombre_completo": "Cliente Test 1772781865864",
+    "telefono": "5559584941",
+    "fecha_registro": "2026-03-06T13:24:24.000Z"
+  },
+  {
+    "id": 4,
+    "nombre_completo": "Cliente Test 1772782670737",
+    "telefono": "5550611991",
+    "fecha_registro": "2026-03-06T13:37:49.000Z"
+  }
+]
+
+3️⃣  Obtener cliente por ID
+
+✏️  [GET] /clients/4
+📊 Status: 200
+✅ Response: {
+  "id": 4,
+  "nombre_completo": "Cliente Test 1772782670737",
+  "telefono": "5550611991",
+  "fecha_registro": "2026-03-06T13:37:49.000Z"
+}
+
+4️⃣  Buscar cliente por teléfono
+
+✏️  [GET] /clients/search?telefono=5550611991
+📊 Status: 200
+✅ Response: {
+  "id": 4,
+  "nombre_completo": "Cliente Test 1772782670737",
+  "telefono": "5550611991",
+  "fecha_registro": "2026-03-06T13:37:49.000Z"
+}
+
+5️⃣  Eliminar cliente
+
+✏️  [DELETE] /clients/4
+📊 Status: 404
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot DELETE /clients/4</pre>
+</body>
+</html>
+
+
+
+📍 PRUEBAS DE BOLETOS
+═══════════════════════════════════════════════════════════
+
+
+📍 PRUEBAS DE MÉTRICAS
+═══════════════════════════════════════════════════════════
+
+1️⃣  Obtener resumen general de métricas
+
+✏️  [GET] /metrics/summary
+📊 Status: 200
+✅ Response: {
+  "total_boletos_vendidos": 0,
+  "total_ingresos": 0,
+  "total_comisiones_rp": 0,
+  "boletos_activos": 0,
+  "boletos_usados": 0
+}
+
+2️⃣  Obtener métricas por RP
+
+✏️  [GET] /metrics/rps
+📊 Status: 200
+✅ Response: [
+  {
+    "rp_id": 5,
+    "username": "rp1",
+    "boletos_vendidos": 0,
+    "ingresos_totales": null,
+    "comisiones_totales": null
+  },
+  {
+    "rp_id": 7,
+    "username": "Borrayes",
+    "boletos_vendidos": 0,
+    "ingresos_totales": null,
+    "comisiones_totales": null
+  },
+  {
+    "rp_id": 12,
+    "username": "rp_1772781334977",
+    "boletos_vendidos": 0,
+    "ingresos_totales": null,
+    "comisiones_totales": null
+  },
+  {
+    "rp_id": 14,
+    "username": "rp_1772781863244",
+    "boletos_vendidos": 0,
+    "ingresos_totales": null,
+    "comisiones_totales": null
+  },
+  {
+    "rp_id": 16,
+    "username": "rp_1772782668093",
+    "boletos_vendidos": 0,
+    "ingresos_totales": null,
+    "comisiones_totales": null
+  }
+]
+
+3️⃣  Obtener métricas del evento
+
+✏️  [GET] /metrics/event/4
+📊 Status: 200
+✅ Response: {
+  "evento_id": 4,
+  "nombre": "Evento Actualizado 1772782669527",
+  "boletos_vendidos": 0,
+  "ingresos_totales": null,
+  "comisiones_rp": null
+}
+
+4️⃣  Obtener métricas por fase del evento
+
+✏️  [GET] /metrics/event/4/phases
+📊 Status: 200
+✅ Response: [
+  {
+    "fase_id": 4,
+    "nombre": "Fase Actualizada 1772782670286",
+    "precio": "200.00",
+    "boletos_vendidos": 0,
+    "ingresos_totales": null
+  }
+]
+
+
+═══════════════════════════════════════════════════════════
+✅ PRUEBAS COMPLETADAS
+═══════════════════════════════════════════════════════════
+

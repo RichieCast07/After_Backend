@@ -104,4 +104,16 @@ export class MySQLEventRepository extends EventRepository {
             connection.release();
         }
     }
+
+    async deleteEvent(eventId: number): Promise<void> {
+        const connection = await db.pool.getConnection();
+        try {
+            const existing = await this.getEventById(eventId);
+            if (!existing) throw new Error("Event not found");
+
+            await connection.query("DELETE FROM eventos WHERE id = ?", [eventId]);
+        } finally {
+            connection.release();
+        }
+    }
 }

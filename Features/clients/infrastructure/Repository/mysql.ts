@@ -59,4 +59,16 @@ export class MySQLClientRepository extends ClientRepository {
             connection.release();
         }
     }
+
+    async deleteClient(clientId: number): Promise<void> {
+        const connection = await db.pool.getConnection();
+        try {
+            const existing = await this.getClientById(clientId);
+            if (!existing) throw new Error("Client not found");
+
+            await connection.query("DELETE FROM clientes WHERE id = ?", [clientId]);
+        } finally {
+            connection.release();
+        }
+    }
 }

@@ -10,8 +10,8 @@ export class HttpError extends Error {
         this.statusCode = statusCode;
         
         // Maintains proper stack trace for where our error was thrown (only available on V8)
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, HttpError);
+        if ((Error as any).captureStackTrace) {
+            (Error as any).captureStackTrace(this, HttpError);
         }
     }
 }

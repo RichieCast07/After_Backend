@@ -1,8 +1,9 @@
 import express from "express";
 import type { Request, Response } from "express";
-import db from "./Core/db.js"; // Nota: en ESM a veces es necesario poner .js al final en los imports locales, o simplemente omitirlo si tsx lo resuelve.
+import db from "./Core/db.js";
 import corsM from "./Core/Middleware/cors.js";
 import { init_users } from "./Features/users/infrastructure/dependences.js";
+import { initFeatures } from "./Features/init.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -28,9 +29,9 @@ process.on('uncaughtException', (err) => {
         }
         console.log('Conexion a la base de datos Lista');
         
-        init_users(app); // Lo descomentaremos cuando armemos las rutas
+        init_users(app);
+        initFeatures(app);
 
-        // health endpoint
         app.get('/health', async (req: Request, res: Response) => {
             try {
                 const err = await db.testConnection();

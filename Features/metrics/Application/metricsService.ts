@@ -1,0 +1,98 @@
+import type { OverallMetrics, RpMetrics, EventMetrics, PhaseMetrics } from "../Domain/Data/metrics.js";
+import db from "../../../Core/db.js";
+
+export class MetricsService {
+    async getOverallMetrics(): Promise<OverallMetrics> {
+        const connection = await db.pool.getConnection();
+        try {
+            const [rows] = await connection.query(
+                `SELECT 
+                    COUNT(*) as total_boletos_vendidos,
+                    SUM(precio) as total_ingresos,
+                    SUM(comision_rp) as total_comisiones_rp,
+                    SUM(CASE WHEN estado = 'ACTIVO' THEN 1 ELSE 0 END) as boletos_activos,
+                    SUM(CASE WHEN estado = 'USADO' THEN 1 ELSE 0 END) as boletos_usados
+                 FROM boletos`
+            );
+            const result = rows as any[];
+            return {
+                total_boletos_vendidos: result[0]?.total_boletos_vendidos || 0,
+                total_ingresos: result[0]?.total_ingresos || 0,
+                total_comisiones_rp: result[0]?.total_comisiones_rp || 0,
+                boletos_activos: result[0]?.boletos_activos || 0,
+                boletos_usados: result[0]?.boletos_usados || 0
+            };
+        } finally {
+            connection.release();
+        }
+    }
+
+    async getRpMetrics(): Promise<RpMetrics[]> {
+        const connection = await db.pool.getConnection();
+        try {
+            const [rows] = await connection.query(
+                `SELECT 
+                    u.id as rp_id,
+                    u.username,
+                    COUNT(b.id) as boletos_vendidos,
+                    SUM(b.precio) as ingresos_totales,
+                    SUM(b.comision_rp) as comisiones_totales
+                 FROM usuarios u
+                 LEFT JOIN boletos b ON u.id = b.rp_id
+                 WHERE u.rol_id = 2
+                 GROUP BY u.id, u.username
+                 ORDER BY comisiones_totales DESC`
+            );
+            return rows as RpMetrics[];
+        } finally {
+            connection.release();
+        }
+    }
+
+    async getEventMetrics(eventId: number): Promise<EventMetrics> {
+        const connection = await db.pool.getConnection();
+        try {
+            const [rows] = await connection.query(
+                `SELECT 
+                    e.id as evento_id,
+                    e.nombre,
+                    COUNT(b.id) as boletos_vendidos,
+                    SUM(b.precio) as ingresos_totales,
+                    SUM(b.comision_rp) as comisiones_rp
+                 FROM eventos e
+                 LEFT JOIN boletos b ON e.id = b.evento_id
+                 WHERE e.id = ?
+                 GROUP BY e.id, e.nombre`,
+                [eventId]
+            );
+            const result = rows as any[];
+            if (result.length === 0) throw new Error("Event not found");
+            return result[0] as EventMetrics;
+        } finally {
+            connection.release();
+        }
+    }
+
+    async getEventPhaseMetrics(eventId: number): Promise<PhaseMetrics[]> {
+        const connection = await db.pool.getConnection();
+        try {
+            const [rows] = await connection.query(
+                `SELECT 
+                    f.id as fase_id,
+                    f.nombre,
+                    f.precio,
+                    COUNT(b.id) as boletos_vendidos,
+                    SUM(b.precio) as ingresos_totales
+                 FROM fases f
+                 LEFT JOIN boletos b ON f.id = b.fase_id
+                 WHERE f.evento_id = ?
+                 GROUP BY f.id, f.nombre, f.precio
+                 ORDER BY f.fecha_inicio ASC`,
+                [eventId]
+            );
+            return rows as PhaseMetrics[];
+        } finally {
+            connection.release();
+        }
+    }
+}

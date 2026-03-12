@@ -11,6 +11,7 @@ export default function productRoutes(controller: UserController): Router {
 
     // Protected routes
     router.use(authMiddleware);
+    router.post('/', (req: Request, res: Response) => controller.registerUser(req, res));
     router.get('/', (req: Request, res: Response) => controller.getUsers(req, res));
     router.get('/:id', (req: Request, res: Response) => controller.getUsersById(req, res));
     router.get('/role/:rolid', (req: Request, res: Response) => controller.getUsersByRole(req, res));

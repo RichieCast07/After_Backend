@@ -90,11 +90,27 @@ export class SellTicketUseCase {
         const latestActivePhase = phases
             .filter((phase) => Boolean(phase.activa))
             .sort(byMostRecentStart)[0];
+        const latestPhase = [...phases].sort(byMostRecentStart)[0];
 
-        const selectedPhase = activePhaseInRange ?? phaseInCurrentDateRange[0] ?? latestActivePhase;
+        let selectedPhase = activePhaseInRange ?? phaseInCurrentDateRange[0] ?? latestActivePhase ?? latestPhase;
+
+        if (!selectedPhase && Number(event.precio_inicial) > 0) {
+            const fallbackStart = new Date();
+            const eventDate = new Date(event.fecha_evento);
+            const fallbackEnd = eventDate > fallbackStart
+                ? eventDate
+                : new Date(fallbackStart.getTime() + 24 * 60 * 60 * 1000);
+
+            selectedPhase = await this.phaseRepository.createPhase(ticket.evento_id, {
+                nombre: "Fase automática",
+                precio: Number(event.precio_inicial),
+                fecha_inicio: fallbackStart,
+                fecha_fin: fallbackEnd,
+            });
+        }
 
         if (!selectedPhase) {
-            const error = new Error("No phase found for selected event");
+            const error = new Error("No phase found for selected event. Create at least one phase with price.");
             (error as any).statusCode = 400;
             throw error;
         }

@@ -20,6 +20,7 @@ export class SellTicketHandler {
             ).trim();
             const rp_id = Number(body.rp_id ?? body.rpId ?? body.user_id ?? body.usuario_id);
             const evento_id = Number(body.evento_id ?? body.eventoId ?? body.event_id);
+            const precio = Number(body.precio ?? body.price ?? body.precio_boleto);
             const missingFields: string[] = [];
 
             if (!cliente_nombre) {
@@ -51,7 +52,8 @@ export class SellTicketHandler {
                 cliente_nombre,
                 cliente_telefono,
                 rp_id,
-                evento_id
+                evento_id,
+                precio: Number.isFinite(precio) && precio > 0 ? precio : undefined
             } as CreateTicketDTO);
 
             res.status(201).json(ticket);

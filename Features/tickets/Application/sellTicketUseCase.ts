@@ -94,7 +94,11 @@ export class SellTicketUseCase {
 
         let selectedPhase = activePhaseInRange ?? phaseInCurrentDateRange[0] ?? latestActivePhase ?? latestPhase;
 
-        if (!selectedPhase && Number(event.precio_inicial) > 0) {
+        const fallbackPrice = Number(event.precio_inicial) > 0
+            ? Number(event.precio_inicial)
+            : (Number(ticket.precio) > 0 ? Number(ticket.precio) : 0);
+
+        if (!selectedPhase && fallbackPrice > 0) {
             const fallbackStart = new Date();
             const eventDate = new Date(event.fecha_evento);
             const fallbackEnd = eventDate > fallbackStart
@@ -103,7 +107,7 @@ export class SellTicketUseCase {
 
             selectedPhase = await this.phaseRepository.createPhase(ticket.evento_id, {
                 nombre: "Fase automática",
-                precio: Number(event.precio_inicial),
+                precio: fallbackPrice,
                 fecha_inicio: fallbackStart,
                 fecha_fin: fallbackEnd,
             });

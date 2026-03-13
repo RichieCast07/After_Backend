@@ -114,7 +114,9 @@ export class SellTicketUseCase {
         }
 
         if (!selectedPhase) {
-            const error = new Error("No phase found for selected event. Create at least one phase with price.");
+            const error = new Error(
+                `No phase found for selected event (id=${event.id}, nombre=${event.nombre}, codigo=${event.codigo_evento}). Create at least one phase with price.`
+            );
             (error as any).statusCode = 400;
             throw error;
         }

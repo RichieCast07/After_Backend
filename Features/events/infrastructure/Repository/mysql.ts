@@ -15,12 +15,15 @@ export class MySQLEventRepository extends EventRepository {
         try {
             const [rows] = await connection.query(
                 `SELECT e.id, e.nombre, e.codigo_evento, e.fecha_evento, e.lugar, e.activo, e.fecha_creacion,
-                        (
-                            SELECT f.precio
-                            FROM fases f
-                            WHERE f.evento_id = e.id
-                            ORDER BY f.fecha_inicio ASC, f.id ASC
-                            LIMIT 1
+                        COALESCE(
+                            (
+                                SELECT f.precio
+                                FROM fases f
+                                WHERE f.evento_id = e.id
+                                ORDER BY f.fecha_inicio ASC, f.id ASC
+                                LIMIT 1
+                            ),
+                            e.precio_inicial
                         ) AS precio_inicial
                  FROM eventos e`
             );
@@ -35,12 +38,15 @@ export class MySQLEventRepository extends EventRepository {
         try {
             const [rows] = await connection.query(
                 `SELECT e.id, e.nombre, e.codigo_evento, e.fecha_evento, e.lugar, e.activo, e.fecha_creacion,
-                        (
-                            SELECT f.precio
-                            FROM fases f
-                            WHERE f.evento_id = e.id
-                            ORDER BY f.fecha_inicio ASC, f.id ASC
-                            LIMIT 1
+                        COALESCE(
+                            (
+                                SELECT f.precio
+                                FROM fases f
+                                WHERE f.evento_id = e.id
+                                ORDER BY f.fecha_inicio ASC, f.id ASC
+                                LIMIT 1
+                            ),
+                            e.precio_inicial
                         ) AS precio_inicial
                  FROM eventos e
                  WHERE e.id = ?`,
@@ -58,8 +64,8 @@ export class MySQLEventRepository extends EventRepository {
         try {
             const eventCode = this.generateEventCode();
             const [result] = await connection.query(
-                "INSERT INTO eventos (nombre, codigo_evento, fecha_evento, lugar) VALUES (?, ?, ?, ?)",
-                [event.nombre, eventCode, event.fecha_evento, event.lugar]
+                "INSERT INTO eventos (nombre, codigo_evento, precio_inicial, fecha_evento, lugar) VALUES (?, ?, ?, ?, ?)",
+                [event.nombre, eventCode, Number(event.precio_inicial) || 0, event.fecha_evento, event.lugar]
             );
             const insertId = (result as any).insertId;
             const created = await this.getEventById(insertId);

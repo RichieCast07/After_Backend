@@ -44,13 +44,14 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 -- ── Eventos ──────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS eventos (
-  id             INT UNSIGNED  AUTO_INCREMENT PRIMARY KEY,
-  nombre         VARCHAR(120)  NOT NULL,
-  codigo_evento  VARCHAR(32)   NOT NULL UNIQUE,
-  fecha_evento   DATETIME      NOT NULL,
-  lugar          VARCHAR(200)  NOT NULL,
-  activo         TINYINT(1)    NOT NULL DEFAULT 1,
-  fecha_creacion DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP
+  id              INT UNSIGNED   AUTO_INCREMENT PRIMARY KEY,
+  nombre          VARCHAR(120)   NOT NULL,
+  codigo_evento   VARCHAR(32)    NOT NULL UNIQUE,
+  precio_inicial  DECIMAL(10,2)  NOT NULL DEFAULT 0.00,
+  fecha_evento    DATETIME       NOT NULL,
+  lugar           VARCHAR(200)   NOT NULL,
+  activo          TINYINT(1)     NOT NULL DEFAULT 1,
+  fecha_creacion  DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = InnoDB;
 
 -- ── Fases ────────────────────────────────────────────────────
@@ -118,6 +119,16 @@ VALUES
 
 -- 2.1  Add MANAGER role (safe even if already present)
 INSERT IGNORE INTO roles (id, nombre) VALUES (3, 'MANAGER');
+
+-- 2.2  Add precio_inicial column to eventos (if upgrading from old schema)
+ALTER TABLE eventos ADD COLUMN IF NOT EXISTS precio_inicial DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER codigo_evento;
+
+-- 2.3  Backfill precio_inicial from first phase for existing events
+UPDATE eventos e
+  INNER JOIN fases f ON f.evento_id = e.id
+SET e.precio_inicial = f.precio
+WHERE e.precio_inicial = 0
+  AND f.id = (SELECT MIN(fi.id) FROM fases fi WHERE fi.evento_id = e.id);
 
 -- 2.2  Add 'codigo' column to boletos (old schema lacked it)
 ALTER TABLE boletos

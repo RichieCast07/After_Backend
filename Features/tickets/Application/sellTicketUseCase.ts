@@ -5,23 +5,27 @@ import type { ClientRepository } from "../../clients/Domain/Repository/clientRep
 import type { PhaseRepository } from "../../phases/Domain/Repository/phaseRepository.js";
 import type { EventRepository } from "../../events/Domain/Repository/eventRepository.js";
 import { randomBytes } from "node:crypto";
+import type { WhatsappService } from "../../../Core/Whatsapp/whatsappService.js";
 
 export class SellTicketUseCase {
     private readonly ticketRepository: TicketRepository;
     private readonly clientRepository: ClientRepository;
     private readonly phaseRepository: PhaseRepository;
     private readonly eventRepository: EventRepository;
+    private readonly whatsappService?: WhatsappService;
 
     constructor(
         ticketRepository: TicketRepository,
         clientRepository: ClientRepository,
         phaseRepository: PhaseRepository,
-        eventRepository: EventRepository
+        eventRepository: EventRepository,
+        whatsappService?: WhatsappService
     ) {
         this.ticketRepository = ticketRepository;
         this.clientRepository = clientRepository;
         this.phaseRepository = phaseRepository;
         this.eventRepository = eventRepository;
+        this.whatsappService = whatsappService;
     }
 
     async execute(ticket: CreateTicketDTO): Promise<Ticket> {
@@ -133,7 +137,7 @@ export class SellTicketUseCase {
             estado: "ACTIVO"
         });
 
-        return this.ticketRepository.createTicket({
+        const createdTicket = await this.ticketRepository.createTicket({
             codigo: generatedCode,
             cliente_nombre: cleanName,
             cliente_telefono: cleanPhone,
@@ -145,5 +149,14 @@ export class SellTicketUseCase {
             comision_rp: commission,
             qr_payload: qrPayload
         });
+
+        this.whatsappService?.sendTicketQr({
+            codigo: generatedCode,
+            cliente_nombre: cleanName,
+            cliente_telefono: cleanPhone,
+            codigo_evento: event.codigo_evento,
+        }).catch((err: unknown) => console.error("[WhatsApp] Error al enviar QR:", err));
+
+        return createdTicket;
     }
 }

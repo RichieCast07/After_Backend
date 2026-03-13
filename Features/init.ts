@@ -51,6 +51,7 @@ import { DeleteTicketByCodeUseCase } from "../Features/tickets/Application/delet
 import { GetTicketsByEventIdUseCase } from "../Features/tickets/Application/getTicketsByEventIdUseCase.js";
 import { GetTicketsByRpIdUseCase } from "../Features/tickets/Application/getTicketsByRpIdUseCase.js";
 import { GetExpiredActiveTicketsUseCase } from "../Features/tickets/Application/getExpiredActiveTicketsUseCase.js";
+import { WhatsappService } from "../Core/Whatsapp/whatsappService.js";
 
 import { SellTicketHandler } from "../Features/tickets/infrastructure/handlers/sellTicketHandler.js";
 import { GetTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/getTicketByCodeHandler.js";
@@ -59,6 +60,7 @@ import { DeleteTicketByCodeHandler } from "../Features/tickets/infrastructure/ha
 import { GetTicketsByEventIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByEventIdHandler.js";
 import { GetTicketsByRpIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByRpIdHandler.js";
 import { GetExpiredActiveTicketsHandler } from "../Features/tickets/infrastructure/handlers/getExpiredActiveTicketsHandler.js";
+import { GetTicketQrHandler } from "../Features/tickets/infrastructure/handlers/getTicketQrHandler.js";
 
 import { TicketController } from "../Features/tickets/infrastructure/ticketController.js";
 import { createTicketsRoutes } from "../Features/tickets/infrastructure/Routes/ticketsRoutes.js";
@@ -137,7 +139,11 @@ export function initFeatures(app: Application): void {
         clientRepository
     );
 
-    const sellTicketUseCase = new SellTicketUseCase(ticketRepository, clientRepository, phaseRepository, eventRepository);
+    const whatsappService = (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN)
+        ? new WhatsappService()
+        : undefined;
+
+    const sellTicketUseCase = new SellTicketUseCase(ticketRepository, clientRepository, phaseRepository, eventRepository, whatsappService);
     const getTicketByCodeUseCase = new GetTicketByCodeUseCase(ticketRepository);
     const markTicketAsUsedUseCase = new MarkTicketAsUsedUseCase(ticketRepository);
     const deleteTicketByCodeUseCase = new DeleteTicketByCodeUseCase(ticketRepository);
@@ -152,6 +158,7 @@ export function initFeatures(app: Application): void {
     const getTicketsByEventIdHandler = new GetTicketsByEventIdHandler(getTicketsByEventIdUseCase);
     const getTicketsByRpIdHandler = new GetTicketsByRpIdHandler(getTicketsByRpIdUseCase);
     const getExpiredActiveTicketsHandler = new GetExpiredActiveTicketsHandler(getExpiredActiveTicketsUseCase);
+    const getTicketQrHandler = new GetTicketQrHandler(getTicketByCodeUseCase);
 
     const ticketController = new TicketController(
         sellTicketHandler,
@@ -160,7 +167,8 @@ export function initFeatures(app: Application): void {
         getTicketsByEventIdHandler,
         getTicketsByRpIdHandler,
         deleteTicketByCodeHandler,
-        getExpiredActiveTicketsHandler
+        getExpiredActiveTicketsHandler,
+        getTicketQrHandler
     );
 
     const getOverallMetricsHandler = new GetOverallMetricsHandler(metricsService);

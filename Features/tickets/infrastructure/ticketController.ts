@@ -6,6 +6,7 @@ import type { GetTicketsByEventIdHandler } from "./handlers/getTicketsByEventIdH
 import type { GetTicketsByRpIdHandler } from "./handlers/getTicketsByRpIdHandler.js";
 import type { DeleteTicketByCodeHandler } from "./handlers/deleteTicketByCodeHandler.js";
 import type { GetExpiredActiveTicketsHandler } from "./handlers/getExpiredActiveTicketsHandler.js";
+import type { GetTicketQrHandler } from "./handlers/getTicketQrHandler.js";
 
 export class TicketController {
     private readonly sellTicketHandler: SellTicketHandler;
@@ -15,6 +16,7 @@ export class TicketController {
     private readonly getTicketsByRpIdHandler: GetTicketsByRpIdHandler;
     private readonly deleteTicketByCodeHandler: DeleteTicketByCodeHandler;
     private readonly getExpiredActiveTicketsHandler: GetExpiredActiveTicketsHandler;
+    private readonly getTicketQrHandler: GetTicketQrHandler;
 
     constructor(
         sellTicketHandler: SellTicketHandler,
@@ -23,7 +25,8 @@ export class TicketController {
         getTicketsByEventIdHandler: GetTicketsByEventIdHandler,
         getTicketsByRpIdHandler: GetTicketsByRpIdHandler,
         deleteTicketByCodeHandler: DeleteTicketByCodeHandler,
-        getExpiredActiveTicketsHandler: GetExpiredActiveTicketsHandler
+        getExpiredActiveTicketsHandler: GetExpiredActiveTicketsHandler,
+        getTicketQrHandler: GetTicketQrHandler
     ) {
         this.sellTicketHandler = sellTicketHandler;
         this.getTicketByCodeHandler = getTicketByCodeHandler;
@@ -32,6 +35,7 @@ export class TicketController {
         this.getTicketsByRpIdHandler = getTicketsByRpIdHandler;
         this.deleteTicketByCodeHandler = deleteTicketByCodeHandler;
         this.getExpiredActiveTicketsHandler = getExpiredActiveTicketsHandler;
+        this.getTicketQrHandler = getTicketQrHandler;
     }
 
     sellTicket(req: Request, res: Response): Promise<void> {
@@ -60,5 +64,9 @@ export class TicketController {
 
     getExpiredActiveTickets(req: Request, res: Response): Promise<void> {
         return this.getExpiredActiveTicketsHandler.handle(req, res);
+    }
+
+    getTicketQr(req: Request, res: Response): Promise<void> {
+        return this.getTicketQrHandler.handle(req, res);
     }
 }

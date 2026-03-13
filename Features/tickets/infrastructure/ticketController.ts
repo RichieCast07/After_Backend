@@ -5,6 +5,7 @@ import type { MarkTicketAsUsedHandler } from "./handlers/markTicketAsUsedHandler
 import type { GetTicketsByEventIdHandler } from "./handlers/getTicketsByEventIdHandler.js";
 import type { GetTicketsByRpIdHandler } from "./handlers/getTicketsByRpIdHandler.js";
 import type { DeleteTicketByCodeHandler } from "./handlers/deleteTicketByCodeHandler.js";
+import type { GetExpiredActiveTicketsHandler } from "./handlers/getExpiredActiveTicketsHandler.js";
 
 export class TicketController {
     private readonly sellTicketHandler: SellTicketHandler;
@@ -13,6 +14,7 @@ export class TicketController {
     private readonly getTicketsByEventIdHandler: GetTicketsByEventIdHandler;
     private readonly getTicketsByRpIdHandler: GetTicketsByRpIdHandler;
     private readonly deleteTicketByCodeHandler: DeleteTicketByCodeHandler;
+    private readonly getExpiredActiveTicketsHandler: GetExpiredActiveTicketsHandler;
 
     constructor(
         sellTicketHandler: SellTicketHandler,
@@ -20,7 +22,8 @@ export class TicketController {
         markTicketAsUsedHandler: MarkTicketAsUsedHandler,
         getTicketsByEventIdHandler: GetTicketsByEventIdHandler,
         getTicketsByRpIdHandler: GetTicketsByRpIdHandler,
-        deleteTicketByCodeHandler: DeleteTicketByCodeHandler
+        deleteTicketByCodeHandler: DeleteTicketByCodeHandler,
+        getExpiredActiveTicketsHandler: GetExpiredActiveTicketsHandler
     ) {
         this.sellTicketHandler = sellTicketHandler;
         this.getTicketByCodeHandler = getTicketByCodeHandler;
@@ -28,6 +31,7 @@ export class TicketController {
         this.getTicketsByEventIdHandler = getTicketsByEventIdHandler;
         this.getTicketsByRpIdHandler = getTicketsByRpIdHandler;
         this.deleteTicketByCodeHandler = deleteTicketByCodeHandler;
+        this.getExpiredActiveTicketsHandler = getExpiredActiveTicketsHandler;
     }
 
     sellTicket(req: Request, res: Response): Promise<void> {
@@ -52,5 +56,9 @@ export class TicketController {
 
     deleteTicketByCode(req: Request, res: Response): Promise<void> {
         return this.deleteTicketByCodeHandler.handle(req, res);
+    }
+
+    getExpiredActiveTickets(req: Request, res: Response): Promise<void> {
+        return this.getExpiredActiveTicketsHandler.handle(req, res);
     }
 }

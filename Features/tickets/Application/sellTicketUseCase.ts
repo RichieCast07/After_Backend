@@ -4,6 +4,7 @@ import type { CreateTicketDTO } from "../Domain/Data/createTicketDTO.js";
 import type { ClientRepository } from "../../clients/Domain/Repository/clientRepository.js";
 import type { PhaseRepository } from "../../phases/Domain/Repository/phaseRepository.js";
 import type { EventRepository } from "../../events/Domain/Repository/eventRepository.js";
+import { randomBytes } from "node:crypto";
 
 export class SellTicketUseCase {
     private readonly ticketRepository: TicketRepository;
@@ -47,6 +48,12 @@ export class SellTicketUseCase {
             throw error;
         }
 
+        if (!event.codigo_evento) {
+            const error = new Error("Event code is missing");
+            (error as any).statusCode = 500;
+            throw error;
+        }
+
         let client = await this.clientRepository.getClientByPhone(cleanPhone);
         if (!client) {
             client = await this.clientRepository.createClient({
@@ -55,12 +62,27 @@ export class SellTicketUseCase {
             });
         }
 
+        const alreadyHasTicket = await this.ticketRepository.existsByClientAndEvent(client.id, ticket.evento_id);
+        if (alreadyHasTicket) {
+            const error = new Error("This client already has a ticket for the selected event");
+            (error as any).statusCode = 409;
+            throw error;
+        }
+
         const phases = await this.phaseRepository.getPhasesByEventId(ticket.evento_id);
-        const activePhase = phases.find((phase) => {
+        const activePhase = phases
+            .filter((phase) => {
             const startsAt = new Date(phase.fecha_inicio);
             const endsAt = new Date(phase.fecha_fin);
             return Boolean(phase.activa) && now >= startsAt && now <= endsAt;
-        });
+            })
+            .sort((first, second) => {
+                const startDiff = new Date(second.fecha_inicio).getTime() - new Date(first.fecha_inicio).getTime();
+                if (startDiff !== 0) {
+                    return startDiff;
+                }
+                return second.id - first.id;
+            })[0];
 
         if (!activePhase) {
             const error = new Error("No active phase found for current date and time");
@@ -70,9 +92,18 @@ export class SellTicketUseCase {
 
         const price = Number(activePhase.precio);
         const commission = Number((price * 0.1).toFixed(2));
+        const generatedCode = `${event.codigo_evento}-${randomBytes(6).toString("hex").toUpperCase()}`;
+        const qrPayload = JSON.stringify({
+            codigo: generatedCode,
+            nombre: client.nombre_completo,
+            telefono: client.telefono,
+            rp_id: ticket.rp_id,
+            codigo_evento: event.codigo_evento,
+            estado: "ACTIVO"
+        });
 
         return this.ticketRepository.createTicket({
-            codigo: ticket.codigo,
+            codigo: generatedCode,
             cliente_nombre: cleanName,
             cliente_telefono: cleanPhone,
             cliente_id: client.id,
@@ -80,7 +111,8 @@ export class SellTicketUseCase {
             evento_id: ticket.evento_id,
             fase_id: activePhase.id,
             precio: price,
-            comision_rp: commission
+            comision_rp: commission,
+            qr_payload: qrPayload
         });
     }
 }

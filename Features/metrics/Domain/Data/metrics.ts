@@ -14,6 +14,8 @@ export interface RpMetrics {
     comisiones_totales: number;
 }
 
+export interface EventRpMetrics extends RpMetrics {}
+
 export interface EventMetrics {
     evento_id: number;
     nombre: string;

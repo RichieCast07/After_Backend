@@ -9,8 +9,8 @@ export class MySQLTicketRepository extends TicketRepository {
         try {
             const [result] = await connection.query(
                 `INSERT INTO boletos 
-                (codigo, cliente_id, rp_id, evento_id, fase_id, precio, comision_rp) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                (codigo, cliente_id, rp_id, evento_id, fase_id, precio, comision_rp, qr_payload) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     ticket.codigo,
                     ticket.cliente_id,
@@ -18,7 +18,8 @@ export class MySQLTicketRepository extends TicketRepository {
                     ticket.evento_id,
                     ticket.fase_id,
                     ticket.precio,
-                    ticket.comision_rp
+                    ticket.comision_rp,
+                    ticket.qr_payload ?? null
                 ]
             );
             const insertId = (result as any).insertId;
@@ -30,13 +31,31 @@ export class MySQLTicketRepository extends TicketRepository {
         }
     }
 
+    async existsByClientAndEvent(clientId: number, eventId: number): Promise<boolean> {
+        const connection = await db.pool.getConnection();
+        try {
+            const [rows] = await connection.query(
+                "SELECT COUNT(*) as total FROM boletos WHERE cliente_id = ? AND evento_id = ?",
+                [clientId, eventId]
+            );
+            const count = Number((rows as any[])[0]?.total ?? 0);
+            return count > 0;
+        } finally {
+            connection.release();
+        }
+    }
+
     async getTicketByCode(code: string): Promise<Ticket | null> {
         const connection = await db.pool.getConnection();
         try {
             const [rows] = await connection.query(
-                `SELECT id, codigo, cliente_id, rp_id, evento_id, fase_id, 
-                        precio, comision_rp, estado, fecha_venta, fecha_uso 
-                 FROM boletos WHERE codigo = ?`,
+                `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
+                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                        b.qr_payload, b.fecha_venta, b.fecha_uso
+                 FROM boletos b
+                 INNER JOIN clientes c ON c.id = b.cliente_id
+                 INNER JOIN eventos e ON e.id = b.evento_id
+                 WHERE b.codigo = ?`,
                 [code]
             );
             const tickets = rows as Ticket[];
@@ -69,9 +88,14 @@ export class MySQLTicketRepository extends TicketRepository {
         const connection = await db.pool.getConnection();
         try {
             const [rows] = await connection.query(
-                `SELECT id, codigo, cliente_id, rp_id, evento_id, fase_id, 
-                        precio, comision_rp, estado, fecha_venta, fecha_uso 
-                 FROM boletos WHERE evento_id = ?`,
+                `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
+                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                        b.qr_payload, b.fecha_venta, b.fecha_uso
+                 FROM boletos b
+                 INNER JOIN clientes c ON c.id = b.cliente_id
+                 INNER JOIN eventos e ON e.id = b.evento_id
+                 WHERE b.evento_id = ?
+                 ORDER BY b.fecha_venta DESC`,
                 [eventId]
             );
             return rows as Ticket[];
@@ -84,10 +108,35 @@ export class MySQLTicketRepository extends TicketRepository {
         const connection = await db.pool.getConnection();
         try {
             const [rows] = await connection.query(
-                `SELECT id, codigo, cliente_id, rp_id, evento_id, fase_id, 
-                        precio, comision_rp, estado, fecha_venta, fecha_uso 
-                 FROM boletos WHERE rp_id = ?`,
+                `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
+                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                        b.qr_payload, b.fecha_venta, b.fecha_uso
+                 FROM boletos b
+                 INNER JOIN clientes c ON c.id = b.cliente_id
+                 INNER JOIN eventos e ON e.id = b.evento_id
+                 WHERE b.rp_id = ?
+                 ORDER BY b.fecha_venta DESC`,
                 [rpId]
+            );
+            return rows as Ticket[];
+        } finally {
+            connection.release();
+        }
+    }
+
+    async getExpiredActiveTickets(): Promise<Ticket[]> {
+        const connection = await db.pool.getConnection();
+        try {
+            const [rows] = await connection.query(
+                `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
+                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                        b.qr_payload, b.fecha_venta, b.fecha_uso
+                 FROM boletos b
+                 INNER JOIN clientes c ON c.id = b.cliente_id
+                 INNER JOIN eventos e ON e.id = b.evento_id
+                 WHERE b.estado = 'ACTIVO'
+                   AND e.fecha_evento < NOW()
+                 ORDER BY e.fecha_evento DESC, b.fecha_venta DESC`
             );
             return rows as Ticket[];
         } finally {
@@ -113,9 +162,13 @@ export class MySQLTicketRepository extends TicketRepository {
         const connection = await db.pool.getConnection();
         try {
             const [rows] = await connection.query(
-                `SELECT id, codigo, cliente_id, rp_id, evento_id, fase_id, 
-                        precio, comision_rp, estado, fecha_venta, fecha_uso 
-                 FROM boletos WHERE id = ?`,
+                `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
+                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                        b.qr_payload, b.fecha_venta, b.fecha_uso
+                 FROM boletos b
+                 INNER JOIN clientes c ON c.id = b.cliente_id
+                 INNER JOIN eventos e ON e.id = b.evento_id
+                 WHERE b.id = ?`,
                 [ticketId]
             );
             const tickets = rows as Ticket[];

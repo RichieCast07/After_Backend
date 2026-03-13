@@ -3,13 +3,26 @@ import type { CreateEventDTO } from "../../Domain/Data/createEventDTO.js";
 import type { UpdateEventDTO } from "../../Domain/Data/updateEventDTO.js";
 import { EventRepository } from "../../Domain/Repository/eventRepository.js";
 import db from "../../../../Core/db.js";
+import { randomBytes } from "node:crypto";
 
 export class MySQLEventRepository extends EventRepository {
+    private generateEventCode(): string {
+        return `EVT-${randomBytes(4).toString("hex").toUpperCase()}`;
+    }
+
     async getEvents(): Promise<Event[]> {
         const connection = await db.pool.getConnection();
         try {
             const [rows] = await connection.query(
-                "SELECT id, nombre, fecha_evento, lugar, activo, fecha_creacion FROM eventos"
+                `SELECT e.id, e.nombre, e.codigo_evento, e.fecha_evento, e.lugar, e.activo, e.fecha_creacion,
+                        (
+                            SELECT f.precio
+                            FROM fases f
+                            WHERE f.evento_id = e.id
+                            ORDER BY f.fecha_inicio ASC, f.id ASC
+                            LIMIT 1
+                        ) AS precio_inicial
+                 FROM eventos e`
             );
             return rows as Event[];
         } finally {
@@ -21,7 +34,16 @@ export class MySQLEventRepository extends EventRepository {
         const connection = await db.pool.getConnection();
         try {
             const [rows] = await connection.query(
-                "SELECT id, nombre, fecha_evento, lugar, activo, fecha_creacion FROM eventos WHERE id = ?",
+                `SELECT e.id, e.nombre, e.codigo_evento, e.fecha_evento, e.lugar, e.activo, e.fecha_creacion,
+                        (
+                            SELECT f.precio
+                            FROM fases f
+                            WHERE f.evento_id = e.id
+                            ORDER BY f.fecha_inicio ASC, f.id ASC
+                            LIMIT 1
+                        ) AS precio_inicial
+                 FROM eventos e
+                 WHERE e.id = ?`,
                 [eventId]
             );
             const events = rows as Event[];
@@ -34,9 +56,10 @@ export class MySQLEventRepository extends EventRepository {
     async createEvent(event: CreateEventDTO): Promise<Event> {
         const connection = await db.pool.getConnection();
         try {
+            const eventCode = this.generateEventCode();
             const [result] = await connection.query(
-                "INSERT INTO eventos (nombre, fecha_evento, lugar) VALUES (?, ?, ?)",
-                [event.nombre, event.fecha_evento, event.lugar]
+                "INSERT INTO eventos (nombre, codigo_evento, fecha_evento, lugar) VALUES (?, ?, ?, ?)",
+                [event.nombre, eventCode, event.fecha_evento, event.lugar]
             );
             const insertId = (result as any).insertId;
             const created = await this.getEventById(insertId);

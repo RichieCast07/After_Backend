@@ -1,4 +1,4 @@
-import type { OverallMetrics, RpMetrics, EventMetrics, PhaseMetrics } from "../Domain/Data/metrics.js";
+import type { OverallMetrics, RpMetrics, EventMetrics, PhaseMetrics, EventRpMetrics } from "../Domain/Data/metrics.js";
 import db from "../../../Core/db.js";
 
 export class MetricsService {
@@ -92,6 +92,29 @@ export class MetricsService {
                 [eventId]
             );
             return rows as PhaseMetrics[];
+        } finally {
+            connection.release();
+        }
+    }
+
+    async getEventRpMetrics(eventId: number): Promise<EventRpMetrics[]> {
+        const connection = await db.pool.getConnection();
+        try {
+            const [rows] = await connection.query(
+                `SELECT 
+                    u.id as rp_id,
+                    u.username,
+                    COUNT(b.id) as boletos_vendidos,
+                    COALESCE(SUM(b.precio), 0) as ingresos_totales,
+                    COALESCE(SUM(b.comision_rp), 0) as comisiones_totales
+                 FROM usuarios u
+                 LEFT JOIN boletos b ON u.id = b.rp_id AND b.evento_id = ?
+                 WHERE u.rol_id = 2
+                 GROUP BY u.id, u.username
+                 ORDER BY boletos_vendidos DESC, ingresos_totales DESC`,
+                [eventId]
+            );
+            return rows as EventRpMetrics[];
         } finally {
             connection.release();
         }

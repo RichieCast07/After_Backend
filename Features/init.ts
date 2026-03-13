@@ -50,6 +50,7 @@ import { MarkTicketAsUsedUseCase } from "../Features/tickets/Application/markTic
 import { DeleteTicketByCodeUseCase } from "../Features/tickets/Application/deleteTicketByCodeUseCase.js";
 import { GetTicketsByEventIdUseCase } from "../Features/tickets/Application/getTicketsByEventIdUseCase.js";
 import { GetTicketsByRpIdUseCase } from "../Features/tickets/Application/getTicketsByRpIdUseCase.js";
+import { GetExpiredActiveTicketsUseCase } from "../Features/tickets/Application/getExpiredActiveTicketsUseCase.js";
 
 import { SellTicketHandler } from "../Features/tickets/infrastructure/handlers/sellTicketHandler.js";
 import { GetTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/getTicketByCodeHandler.js";
@@ -57,6 +58,7 @@ import { MarkTicketAsUsedHandler } from "../Features/tickets/infrastructure/hand
 import { DeleteTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/deleteTicketByCodeHandler.js";
 import { GetTicketsByEventIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByEventIdHandler.js";
 import { GetTicketsByRpIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByRpIdHandler.js";
+import { GetExpiredActiveTicketsHandler } from "../Features/tickets/infrastructure/handlers/getExpiredActiveTicketsHandler.js";
 
 import { TicketController } from "../Features/tickets/infrastructure/ticketController.js";
 import { createTicketsRoutes } from "../Features/tickets/infrastructure/Routes/ticketsRoutes.js";
@@ -67,6 +69,7 @@ import { GetOverallMetricsHandler } from "../Features/metrics/infrastructure/han
 import { GetRpMetricsHandler } from "../Features/metrics/infrastructure/handlers/getRpMetricsHandler.js";
 import { GetEventMetricsHandler } from "../Features/metrics/infrastructure/handlers/getEventMetricsHandler.js";
 import { GetEventPhaseMetricsHandler } from "../Features/metrics/infrastructure/handlers/getEventPhaseMetricsHandler.js";
+import { GetEventRpMetricsHandler } from "../Features/metrics/infrastructure/handlers/getEventRpMetricsHandler.js";
 import { MetricsController } from "../Features/metrics/infrastructure/metricsController.js";
 import { createMetricsRoutes } from "../Features/metrics/infrastructure/Routes/metricsRoutes.js";
 
@@ -79,7 +82,7 @@ export function initFeatures(app: Application): void {
 
     const getEventsUseCase = new GetEventsUseCase(eventRepository);
     const getEventByIdUseCase = new GetEventByIdUseCase(eventRepository);
-    const createEventUseCase = new CreateEventUseCase(eventRepository);
+    const createEventUseCase = new CreateEventUseCase(eventRepository, phaseRepository);
     const updateEventUseCase = new UpdateEventUseCase(eventRepository);
     const toggleEventStatusUseCase = new ToggleEventStatusUseCase(eventRepository);
 
@@ -140,6 +143,7 @@ export function initFeatures(app: Application): void {
     const deleteTicketByCodeUseCase = new DeleteTicketByCodeUseCase(ticketRepository);
     const getTicketsByEventIdUseCase = new GetTicketsByEventIdUseCase(ticketRepository);
     const getTicketsByRpIdUseCase = new GetTicketsByRpIdUseCase(ticketRepository);
+    const getExpiredActiveTicketsUseCase = new GetExpiredActiveTicketsUseCase(ticketRepository);
 
     const sellTicketHandler = new SellTicketHandler(sellTicketUseCase);
     const getTicketByCodeHandler = new GetTicketByCodeHandler(getTicketByCodeUseCase);
@@ -147,6 +151,7 @@ export function initFeatures(app: Application): void {
     const deleteTicketByCodeHandler = new DeleteTicketByCodeHandler(deleteTicketByCodeUseCase);
     const getTicketsByEventIdHandler = new GetTicketsByEventIdHandler(getTicketsByEventIdUseCase);
     const getTicketsByRpIdHandler = new GetTicketsByRpIdHandler(getTicketsByRpIdUseCase);
+    const getExpiredActiveTicketsHandler = new GetExpiredActiveTicketsHandler(getExpiredActiveTicketsUseCase);
 
     const ticketController = new TicketController(
         sellTicketHandler,
@@ -154,19 +159,22 @@ export function initFeatures(app: Application): void {
         markTicketAsUsedHandler,
         getTicketsByEventIdHandler,
         getTicketsByRpIdHandler,
-        deleteTicketByCodeHandler
+        deleteTicketByCodeHandler,
+        getExpiredActiveTicketsHandler
     );
 
     const getOverallMetricsHandler = new GetOverallMetricsHandler(metricsService);
     const getRpMetricsHandler = new GetRpMetricsHandler(metricsService);
     const getEventMetricsHandler = new GetEventMetricsHandler(metricsService);
     const getEventPhaseMetricsHandler = new GetEventPhaseMetricsHandler(metricsService);
+    const getEventRpMetricsHandler = new GetEventRpMetricsHandler(metricsService);
 
     const metricsController = new MetricsController(
         getOverallMetricsHandler,
         getRpMetricsHandler,
         getEventMetricsHandler,
-        getEventPhaseMetricsHandler
+        getEventPhaseMetricsHandler,
+        getEventRpMetricsHandler
     );
 
     const eventsRoutes = createEventsRoutes(eventController);

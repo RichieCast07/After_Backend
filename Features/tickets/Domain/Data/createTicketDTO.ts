@@ -1,5 +1,5 @@
 export interface CreateTicketDTO {
-    codigo: string;
+    codigo?: string;
     cliente_nombre: string;
     cliente_telefono: string;
     rp_id: number;
@@ -8,4 +8,5 @@ export interface CreateTicketDTO {
     fase_id?: number;
     precio?: number;
     comision_rp?: number;
+    qr_payload?: string;
 }

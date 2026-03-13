@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS eventos (
   id             INT UNSIGNED  AUTO_INCREMENT PRIMARY KEY,
   nombre         VARCHAR(120)  NOT NULL,
+  codigo_evento  VARCHAR(32)   NOT NULL UNIQUE,
   fecha_evento   DATETIME      NOT NULL,
   lugar          VARCHAR(200)  NOT NULL,
   activo         TINYINT(1)    NOT NULL DEFAULT 1,
@@ -85,12 +86,14 @@ CREATE TABLE IF NOT EXISTS boletos (
   precio      DECIMAL(10, 2) NOT NULL,
   comision_rp DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
   estado      ENUM('ACTIVO', 'USADO') NOT NULL DEFAULT 'ACTIVO',
+  qr_payload  TEXT           NULL,
   fecha_venta DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
   fecha_uso   DATETIME       NULL     DEFAULT NULL,
   FOREIGN KEY (cliente_id) REFERENCES clientes  (id),
   FOREIGN KEY (rp_id)      REFERENCES usuarios  (id),
   FOREIGN KEY (evento_id)  REFERENCES eventos   (id),
-  FOREIGN KEY (fase_id)    REFERENCES fases     (id)
+  FOREIGN KEY (fase_id)    REFERENCES fases     (id),
+  UNIQUE KEY uq_boletos_cliente_evento (cliente_id, evento_id)
 ) ENGINE = InnoDB;
 
 
@@ -125,9 +128,26 @@ ALTER TABLE boletos
 ALTER TABLE boletos
   ADD COLUMN IF NOT EXISTS comision_rp DECIMAL(10, 2) NOT NULL DEFAULT 0.00;
 
+-- 2.3b Add qr payload snapshot column
+ALTER TABLE boletos
+  ADD COLUMN IF NOT EXISTS qr_payload TEXT NULL;
+
 -- 2.4  Add 'fecha_uso' column
 ALTER TABLE boletos
   ADD COLUMN IF NOT EXISTS fecha_uso DATETIME NULL DEFAULT NULL;
+
+-- 2.4b Add event code column
+ALTER TABLE eventos
+  ADD COLUMN IF NOT EXISTS codigo_evento VARCHAR(32) NULL;
+
+-- 2.4c Backfill event code and enforce unique constraint
+UPDATE eventos
+SET codigo_evento = CONCAT('EVT-', UPPER(HEX(RANDOM_BYTES(4))))
+WHERE codigo_evento IS NULL OR codigo_evento = '';
+
+ALTER TABLE eventos
+  MODIFY COLUMN codigo_evento VARCHAR(32) NOT NULL,
+  ADD UNIQUE KEY uq_eventos_codigo_evento (codigo_evento);
 
 -- 2.5  Rename precio_pagado → precio
 --      Only run this if your table has 'precio_pagado' instead of 'precio':
@@ -145,6 +165,10 @@ ALTER TABLE boletos
 -- ALTER TABLE boletos
 --   MODIFY COLUMN codigo VARCHAR(36) NOT NULL,
 --   ADD UNIQUE KEY uq_boletos_codigo (codigo);
+
+-- 2.8  Enforce one ticket per client per event (remove duplicates first if needed)
+-- ALTER TABLE boletos
+--   ADD UNIQUE KEY uq_boletos_cliente_evento (cliente_id, evento_id);
 
 -- =============================================================
 -- END OF SCRIPT

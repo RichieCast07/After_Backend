@@ -11,15 +11,14 @@ export class SellTicketHandler {
 
     async handle(req: Request, res: Response): Promise<void> {
         try {
-            const { codigo, cliente_nombre, cliente_telefono, rp_id, evento_id } = req.body as CreateTicketDTO;
+            const { cliente_nombre, cliente_telefono, rp_id, evento_id } = req.body as CreateTicketDTO;
 
-            if (!codigo || !cliente_nombre || !cliente_telefono || !rp_id || !evento_id) {
+            if (!cliente_nombre || !cliente_telefono || !rp_id || !evento_id) {
                 res.status(400).json({ error: "Missing required fields" });
                 return;
             }
 
             const ticket = await this.sellTicketUseCase.execute({
-                codigo,
                 cliente_nombre,
                 cliente_telefono,
                 rp_id,

@@ -70,6 +70,11 @@ export class MySQLTicketRepository extends TicketRepository {
         try {
             const existing = await this.getTicketByCode(ticketCode);
             if (!existing) throw new Error("Ticket not found");
+            if (existing.estado === "USADO") {
+                const error = new Error("Ticket already used");
+                (error as any).statusCode = 409;
+                throw error;
+            }
 
             await connection.query(
                 "UPDATE boletos SET estado = 'USADO', fecha_uso = NOW() WHERE codigo = ?",

@@ -18,8 +18,8 @@ export class CreateEventUseCase {
         await this.phaseRepository.createPhase(createdEvent.id, {
             nombre: "Fase 1",
             precio: event.precio_inicial,
-            fecha_inicio: new Date().toISOString(),
-            fecha_fin: new Date(event.fecha_evento).toISOString(),
+            fecha_inicio: new Date(),
+            fecha_fin: new Date(event.fecha_evento),
         });
 
         return createdEvent;

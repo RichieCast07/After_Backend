@@ -12,9 +12,26 @@ export class CreateEventHandler {
     async handle(req: Request, res: Response): Promise<void> {
         try {
             const { nombre, fecha_evento, lugar, precio_inicial } = req.body as CreateEventDTO;
+            const missingFields: string[] = [];
 
-            if (!nombre || !fecha_evento || precio_inicial === undefined) {
-                res.status(400).json({ error: "Missing required fields" });
+            if (!nombre) {
+                missingFields.push("nombre");
+            }
+
+            if (!fecha_evento) {
+                missingFields.push("fecha_evento");
+            }
+
+            if (precio_inicial === undefined || precio_inicial === null || precio_inicial === "") {
+                missingFields.push("precio_inicial");
+            }
+
+            if (missingFields.length > 0) {
+                res.status(400).json({
+                    error: "Missing required fields",
+                    details: missingFields,
+                    received: req.body ?? null
+                });
                 return;
             }
 

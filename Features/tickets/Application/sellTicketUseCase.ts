@@ -29,7 +29,7 @@ export class SellTicketUseCase {
         const cleanPhone = String(ticket.cliente_telefono ?? "").trim();
         const cleanName = String(ticket.cliente_nombre ?? "").trim();
 
-        if (!ticket.codigo || !ticket.rp_id || !ticket.evento_id || !cleanName || !cleanPhone) {
+        if (!ticket.rp_id || !ticket.evento_id || !cleanName || !cleanPhone) {
             const error = new Error("Missing required fields");
             (error as any).statusCode = 400;
             throw error;

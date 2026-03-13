@@ -10,7 +10,9 @@ export class SearchClientByPhoneHandler {
 
     async handle(req: Request, res: Response): Promise<void> {
         try {
-            const { telefono } = req.query;
+            const telefonoFromQuery = req.query.telefono ?? req.query.phone ?? req.query.clientPhone;
+            const telefonoFromParams = req.params.telefono ?? req.params.phone;
+            const telefono = telefonoFromQuery ?? telefonoFromParams;
 
             if (!telefono || typeof telefono !== "string") {
                 res.status(400).json({ error: "Phone parameter required" });

@@ -11,7 +11,15 @@ export class SellTicketHandler {
 
     async handle(req: Request, res: Response): Promise<void> {
         try {
-            const { cliente_nombre, cliente_telefono, rp_id, evento_id } = req.body as CreateTicketDTO;
+            const body = (req.body ?? {}) as Record<string, unknown>;
+            const cliente_nombre = String(
+                body.cliente_nombre ?? body.nombre_cliente ?? body.client_name ?? ""
+            ).trim();
+            const cliente_telefono = String(
+                body.cliente_telefono ?? body.telefono_cliente ?? body.telefono ?? body.phone ?? ""
+            ).trim();
+            const rp_id = Number(body.rp_id ?? body.rpId ?? body.user_id ?? body.usuario_id);
+            const evento_id = Number(body.evento_id ?? body.eventoId ?? body.event_id);
             const missingFields: string[] = [];
 
             if (!cliente_nombre) {
@@ -22,11 +30,11 @@ export class SellTicketHandler {
                 missingFields.push("cliente_telefono");
             }
 
-            if (!rp_id) {
+            if (!Number.isFinite(rp_id) || rp_id <= 0) {
                 missingFields.push("rp_id");
             }
 
-            if (!evento_id) {
+            if (!Number.isFinite(evento_id) || evento_id <= 0) {
                 missingFields.push("evento_id");
             }
 
@@ -44,7 +52,7 @@ export class SellTicketHandler {
                 cliente_telefono,
                 rp_id,
                 evento_id
-            });
+            } as CreateTicketDTO);
 
             res.status(201).json(ticket);
         } catch (error: any) {

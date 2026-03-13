@@ -70,27 +70,36 @@ export class SellTicketUseCase {
         }
 
         const phases = await this.phaseRepository.getPhasesByEventId(ticket.evento_id);
-        const activePhase = phases
-            .filter((phase) => {
-            const startsAt = new Date(phase.fecha_inicio);
-            const endsAt = new Date(phase.fecha_fin);
-            return Boolean(phase.activa) && now >= startsAt && now <= endsAt;
-            })
-            .sort((first, second) => {
-                const startDiff = new Date(second.fecha_inicio).getTime() - new Date(first.fecha_inicio).getTime();
-                if (startDiff !== 0) {
-                    return startDiff;
-                }
-                return second.id - first.id;
-            })[0];
+        const byMostRecentStart = (first: { fecha_inicio: Date; id: number }, second: { fecha_inicio: Date; id: number }) => {
+            const startDiff = new Date(second.fecha_inicio).getTime() - new Date(first.fecha_inicio).getTime();
+            if (startDiff !== 0) {
+                return startDiff;
+            }
+            return second.id - first.id;
+        };
 
-        if (!activePhase) {
-            const error = new Error("No active phase found for current date and time");
+        const phaseInCurrentDateRange = phases
+            .filter((phase) => {
+                const startsAt = new Date(phase.fecha_inicio);
+                const endsAt = new Date(phase.fecha_fin);
+                return now >= startsAt && now <= endsAt;
+            })
+            .sort(byMostRecentStart);
+
+        const activePhaseInRange = phaseInCurrentDateRange.find((phase) => Boolean(phase.activa));
+        const latestActivePhase = phases
+            .filter((phase) => Boolean(phase.activa))
+            .sort(byMostRecentStart)[0];
+
+        const selectedPhase = activePhaseInRange ?? phaseInCurrentDateRange[0] ?? latestActivePhase;
+
+        if (!selectedPhase) {
+            const error = new Error("No phase found for selected event");
             (error as any).statusCode = 400;
             throw error;
         }
 
-        const price = Number(activePhase.precio);
+        const price = Number(selectedPhase.precio);
         const commission = Number((price * 0.1).toFixed(2));
         const generatedCode = `${event.codigo_evento}-${randomBytes(6).toString("hex").toUpperCase()}`;
         const qrPayload = JSON.stringify({
@@ -109,7 +118,7 @@ export class SellTicketUseCase {
             cliente_id: client.id,
             rp_id: ticket.rp_id,
             evento_id: ticket.evento_id,
-            fase_id: activePhase.id,
+            fase_id: selectedPhase.id,
             precio: price,
             comision_rp: commission,
             qr_payload: qrPayload

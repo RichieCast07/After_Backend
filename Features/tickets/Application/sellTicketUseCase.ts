@@ -3,20 +3,24 @@ import type { TicketRepository } from "../Domain/Repository/ticketRepository.js"
 import type { CreateTicketDTO } from "../Domain/Data/createTicketDTO.js";
 import type { ClientRepository } from "../../clients/Domain/Repository/clientRepository.js";
 import type { PhaseRepository } from "../../phases/Domain/Repository/phaseRepository.js";
+import type { EventRepository } from "../../events/Domain/Repository/eventRepository.js";
 
 export class SellTicketUseCase {
     private readonly ticketRepository: TicketRepository;
     private readonly clientRepository: ClientRepository;
     private readonly phaseRepository: PhaseRepository;
+    private readonly eventRepository: EventRepository;
 
     constructor(
         ticketRepository: TicketRepository,
         clientRepository: ClientRepository,
-        phaseRepository: PhaseRepository
+        phaseRepository: PhaseRepository,
+        eventRepository: EventRepository
     ) {
         this.ticketRepository = ticketRepository;
         this.clientRepository = clientRepository;
         this.phaseRepository = phaseRepository;
+        this.eventRepository = eventRepository;
     }
 
     async execute(ticket: CreateTicketDTO): Promise<Ticket> {
@@ -26,6 +30,19 @@ export class SellTicketUseCase {
 
         if (!ticket.codigo || !ticket.rp_id || !ticket.evento_id || !cleanName || !cleanPhone) {
             const error = new Error("Missing required fields");
+            (error as any).statusCode = 400;
+            throw error;
+        }
+
+        const event = await this.eventRepository.getEventById(ticket.evento_id);
+        if (!event) {
+            const error = new Error("Selected event does not exist");
+            (error as any).statusCode = 400;
+            throw error;
+        }
+
+        if (!event.activo) {
+            const error = new Error("Cannot sell tickets for an inactive event");
             (error as any).statusCode = 400;
             throw error;
         }

@@ -11,26 +11,26 @@ export class SellTicketHandler {
 
     async handle(req: Request, res: Response): Promise<void> {
         try {
-            const { codigo, cliente_id, rp_id, evento_id, fase_id, precio, comision_rp } = req.body as CreateTicketDTO;
+            const { codigo, cliente_nombre, cliente_telefono, rp_id, evento_id } = req.body as CreateTicketDTO;
 
-            if (!codigo || !cliente_id || !rp_id || !evento_id || !fase_id || precio === undefined) {
+            if (!codigo || !cliente_nombre || !cliente_telefono || !rp_id || !evento_id) {
                 res.status(400).json({ error: "Missing required fields" });
                 return;
             }
 
             const ticket = await this.sellTicketUseCase.execute({
                 codigo,
-                cliente_id,
+                cliente_nombre,
+                cliente_telefono,
                 rp_id,
-                evento_id,
-                fase_id,
-                precio,
-                comision_rp: comision_rp || 0
+                evento_id
             });
 
             res.status(201).json(ticket);
-        } catch (error) {
-            res.status(500).json({ error: String(error) });
+        } catch (error: any) {
+            const statusCode = error?.statusCode || 500;
+            const message = error?.message || String(error);
+            res.status(statusCode).json({ error: message });
         }
     }
 }

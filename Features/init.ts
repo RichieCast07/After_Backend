@@ -134,7 +134,7 @@ export function initFeatures(app: Application): void {
         clientRepository
     );
 
-    const sellTicketUseCase = new SellTicketUseCase(ticketRepository);
+    const sellTicketUseCase = new SellTicketUseCase(ticketRepository, clientRepository, phaseRepository);
     const getTicketByCodeUseCase = new GetTicketByCodeUseCase(ticketRepository);
     const markTicketAsUsedUseCase = new MarkTicketAsUsedUseCase(ticketRepository);
     const deleteTicketByCodeUseCase = new DeleteTicketByCodeUseCase(ticketRepository);

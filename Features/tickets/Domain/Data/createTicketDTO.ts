@@ -1,9 +1,11 @@
 export interface CreateTicketDTO {
     codigo: string;
-    cliente_id: number;
+    cliente_nombre: string;
+    cliente_telefono: string;
     rp_id: number;
     evento_id: number;
-    fase_id: number;
-    precio: number;
-    comision_rp: number;
+    cliente_id?: number;
+    fase_id?: number;
+    precio?: number;
+    comision_rp?: number;
 }

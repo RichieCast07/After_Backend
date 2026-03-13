@@ -11,4 +11,6 @@ export abstract class TicketRepository {
     abstract getTicketsByEventId(eventId: number): Promise<Ticket[]>;
 
     abstract getTicketsByRpId(rpId: number): Promise<Ticket[]>;
+
+    abstract deleteByCode(code: string): Promise<boolean>;
 }

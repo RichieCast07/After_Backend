@@ -4,6 +4,7 @@ import type { GetTicketByCodeHandler } from "./handlers/getTicketByCodeHandler.j
 import type { MarkTicketAsUsedHandler } from "./handlers/markTicketAsUsedHandler.js";
 import type { GetTicketsByEventIdHandler } from "./handlers/getTicketsByEventIdHandler.js";
 import type { GetTicketsByRpIdHandler } from "./handlers/getTicketsByRpIdHandler.js";
+import type { DeleteTicketByCodeHandler } from "./handlers/deleteTicketByCodeHandler.js";
 
 export class TicketController {
     private readonly sellTicketHandler: SellTicketHandler;
@@ -11,19 +12,22 @@ export class TicketController {
     private readonly markTicketAsUsedHandler: MarkTicketAsUsedHandler;
     private readonly getTicketsByEventIdHandler: GetTicketsByEventIdHandler;
     private readonly getTicketsByRpIdHandler: GetTicketsByRpIdHandler;
+    private readonly deleteTicketByCodeHandler: DeleteTicketByCodeHandler;
 
     constructor(
         sellTicketHandler: SellTicketHandler,
         getTicketByCodeHandler: GetTicketByCodeHandler,
         markTicketAsUsedHandler: MarkTicketAsUsedHandler,
         getTicketsByEventIdHandler: GetTicketsByEventIdHandler,
-        getTicketsByRpIdHandler: GetTicketsByRpIdHandler
+        getTicketsByRpIdHandler: GetTicketsByRpIdHandler,
+        deleteTicketByCodeHandler: DeleteTicketByCodeHandler
     ) {
         this.sellTicketHandler = sellTicketHandler;
         this.getTicketByCodeHandler = getTicketByCodeHandler;
         this.markTicketAsUsedHandler = markTicketAsUsedHandler;
         this.getTicketsByEventIdHandler = getTicketsByEventIdHandler;
         this.getTicketsByRpIdHandler = getTicketsByRpIdHandler;
+        this.deleteTicketByCodeHandler = deleteTicketByCodeHandler;
     }
 
     sellTicket(req: Request, res: Response): Promise<void> {
@@ -44,5 +48,9 @@ export class TicketController {
 
     getTicketsByRpId(req: Request, res: Response): Promise<void> {
         return this.getTicketsByRpIdHandler.handle(req, res);
+    }
+
+    deleteTicketByCode(req: Request, res: Response): Promise<void> {
+        return this.deleteTicketByCodeHandler.handle(req, res);
     }
 }

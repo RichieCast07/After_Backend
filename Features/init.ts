@@ -47,12 +47,14 @@ import { MySQLClientRepository } from "../Features/clients/infrastructure/Reposi
 import { SellTicketUseCase } from "../Features/tickets/Application/sellTicketUseCase.js";
 import { GetTicketByCodeUseCase } from "../Features/tickets/Application/getTicketByCodeUseCase.js";
 import { MarkTicketAsUsedUseCase } from "../Features/tickets/Application/markTicketAsUsedUseCase.js";
+import { DeleteTicketByCodeUseCase } from "../Features/tickets/Application/deleteTicketByCodeUseCase.js";
 import { GetTicketsByEventIdUseCase } from "../Features/tickets/Application/getTicketsByEventIdUseCase.js";
 import { GetTicketsByRpIdUseCase } from "../Features/tickets/Application/getTicketsByRpIdUseCase.js";
 
 import { SellTicketHandler } from "../Features/tickets/infrastructure/handlers/sellTicketHandler.js";
 import { GetTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/getTicketByCodeHandler.js";
 import { MarkTicketAsUsedHandler } from "../Features/tickets/infrastructure/handlers/markTicketAsUsedHandler.js";
+import { DeleteTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/deleteTicketByCodeHandler.js";
 import { GetTicketsByEventIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByEventIdHandler.js";
 import { GetTicketsByRpIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByRpIdHandler.js";
 
@@ -135,12 +137,14 @@ export function initFeatures(app: Application): void {
     const sellTicketUseCase = new SellTicketUseCase(ticketRepository);
     const getTicketByCodeUseCase = new GetTicketByCodeUseCase(ticketRepository);
     const markTicketAsUsedUseCase = new MarkTicketAsUsedUseCase(ticketRepository);
+    const deleteTicketByCodeUseCase = new DeleteTicketByCodeUseCase(ticketRepository);
     const getTicketsByEventIdUseCase = new GetTicketsByEventIdUseCase(ticketRepository);
     const getTicketsByRpIdUseCase = new GetTicketsByRpIdUseCase(ticketRepository);
 
     const sellTicketHandler = new SellTicketHandler(sellTicketUseCase);
     const getTicketByCodeHandler = new GetTicketByCodeHandler(getTicketByCodeUseCase);
     const markTicketAsUsedHandler = new MarkTicketAsUsedHandler(markTicketAsUsedUseCase);
+    const deleteTicketByCodeHandler = new DeleteTicketByCodeHandler(deleteTicketByCodeUseCase);
     const getTicketsByEventIdHandler = new GetTicketsByEventIdHandler(getTicketsByEventIdUseCase);
     const getTicketsByRpIdHandler = new GetTicketsByRpIdHandler(getTicketsByRpIdUseCase);
 
@@ -149,7 +153,8 @@ export function initFeatures(app: Application): void {
         getTicketByCodeHandler,
         markTicketAsUsedHandler,
         getTicketsByEventIdHandler,
-        getTicketsByRpIdHandler
+        getTicketsByRpIdHandler,
+        deleteTicketByCodeHandler
     );
 
     const getOverallMetricsHandler = new GetOverallMetricsHandler(metricsService);

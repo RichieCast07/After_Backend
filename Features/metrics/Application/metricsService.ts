@@ -41,7 +41,8 @@ export class MetricsService {
                  LEFT JOIN boletos b ON u.id = b.rp_id
                  WHERE u.rol_id = 2
                  GROUP BY u.id, u.username
-                 ORDER BY comisiones_totales DESC`
+                 ORDER BY boletos_vendidos DESC
+                 LIMIT 10`
             );
             return rows as RpMetrics[];
         } finally {

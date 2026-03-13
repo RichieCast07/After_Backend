@@ -95,6 +95,20 @@ export class MySQLTicketRepository extends TicketRepository {
         }
     }
 
+    async deleteByCode(code: string): Promise<boolean> {
+        const connection = await db.pool.getConnection();
+        try {
+            const [result] = await connection.query(
+                "DELETE FROM boletos WHERE codigo = ?",
+                [code]
+            );
+
+            return ((result as any).affectedRows ?? 0) > 0;
+        } finally {
+            connection.release();
+        }
+    }
+
     private async getTicketById(ticketId: number): Promise<Ticket | null> {
         const connection = await db.pool.getConnection();
         try {

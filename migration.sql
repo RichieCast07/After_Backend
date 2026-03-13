@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS boletos (
 INSERT IGNORE INTO usuarios
   (nombre_completo, telefono, username, password_hash, rol_id, activo)
 VALUES
-  ('Admin', '0000000000', 'admin', '$2b$10$REEMPLAZAR_CON_HASH_REAL', 1, 1);
+  ('Admin', '0000000000', 'admin', '$2b$10$Ip5AMJHegg4CKRzbno3C3uSJRAgk.DwL3oLwRRgDnsyRYB9FjmN0q', 1, 1);
 
 
 -- =============================================================

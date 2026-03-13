@@ -25,6 +25,7 @@ export class DTOValidators {
 
     static validateRegisterDTO(dto: RegisterUserDTO): string[] {
         const errors: string[] = [];
+        const telefonoNumber = Number((dto as any).telefono);
 
         const passwordValidation = this.validatePassword(dto.password);
         if (!passwordValidation.valid) {
@@ -35,7 +36,7 @@ export class DTOValidators {
             errors.push('Username must be between 3 and 50 characters');
         }
 
-        if(!dto.telefono || typeof dto.telefono !== 'number') {
+        if (!Number.isFinite(telefonoNumber)) {
             errors.push('Telefono is required and must be a number');
         }
 
@@ -47,13 +48,13 @@ export class DTOValidators {
             errors.push('Rol ID is required and must be a number');
         }
 
-        if(dto.telefono < 1000000000 || dto.telefono > 9999999999) {
+        if (telefonoNumber < 1000000000 || telefonoNumber > 9999999999) {
             errors.push('Telefono must be a valid 10-digit number');
         }
 
-        const validRoles = [1, 2];
+        const validRoles = [1, 2, 3];
         if (!dto.rol_id || !validRoles.includes(dto.rol_id)) {
-            errors.push('Invalid role. Must be admin (1) or RP (2)');
+            errors.push('Invalid role. Must be admin (1), RP (2), or Manager (3)');
         }
 
         return errors;

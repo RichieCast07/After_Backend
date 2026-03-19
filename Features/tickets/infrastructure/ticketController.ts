@@ -1,12 +1,12 @@
 import type { Request, Response } from "express";
-import type { SellTicketHandler } from "./handlers/sellTicketHandler.js";
-import type { GetTicketByCodeHandler } from "./handlers/getTicketByCodeHandler.js";
-import type { MarkTicketAsUsedHandler } from "./handlers/markTicketAsUsedHandler.js";
-import type { GetTicketsByEventIdHandler } from "./handlers/getTicketsByEventIdHandler.js";
-import type { GetTicketsByRpIdHandler } from "./handlers/getTicketsByRpIdHandler.js";
 import type { DeleteTicketByCodeHandler } from "./handlers/deleteTicketByCodeHandler.js";
 import type { GetExpiredActiveTicketsHandler } from "./handlers/getExpiredActiveTicketsHandler.js";
+import type { GetTicketByCodeHandler } from "./handlers/getTicketByCodeHandler.js";
 import type { GetTicketQrHandler } from "./handlers/getTicketQrHandler.js";
+import type { GetTicketsByEventIdHandler } from "./handlers/getTicketsByEventIdHandler.js";
+import type { GetTicketsByRpIdHandler } from "./handlers/getTicketsByRpIdHandler.js";
+import type { MarkTicketAsUsedHandler } from "./handlers/markTicketAsUsedHandler.js";
+import type { SellTicketHandler } from "./handlers/sellTicketHandler.js";
 
 export class TicketController {
     private readonly sellTicketHandler: SellTicketHandler;

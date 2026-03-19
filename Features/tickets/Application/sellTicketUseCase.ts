@@ -1,11 +1,11 @@
-import type { Ticket } from "../Domain/Data/ticket.js";
-import type { TicketRepository } from "../Domain/Repository/ticketRepository.js";
-import type { CreateTicketDTO } from "../Domain/Data/createTicketDTO.js";
-import type { ClientRepository } from "../../clients/Domain/Repository/clientRepository.js";
-import type { PhaseRepository } from "../../phases/Domain/Repository/phaseRepository.js";
-import type { EventRepository } from "../../events/Domain/Repository/eventRepository.js";
 import { randomBytes } from "node:crypto";
 import type { WhatsappService } from "../../../Core/Whatsapp/whatsappService.js";
+import type { ClientRepository } from "../../clients/Domain/Repository/clientRepository.js";
+import type { EventRepository } from "../../events/Domain/Repository/eventRepository.js";
+import type { PhaseRepository } from "../../phases/Domain/Repository/phaseRepository.js";
+import type { CreateTicketDTO } from "../Domain/Data/createTicketDTO.js";
+import type { Ticket } from "../Domain/Data/ticket.js";
+import type { TicketRepository } from "../Domain/Repository/ticketRepository.js";
 
 export class SellTicketUseCase {
     private readonly ticketRepository: TicketRepository;

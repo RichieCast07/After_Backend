@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import type { GetTicketByCodeUseCase } from "../../Application/getTicketByCodeUseCase.js";
 import QRCode from "qrcode";
+import type { GetTicketByCodeUseCase } from "../../Application/getTicketByCodeUseCase.js";
 
 export class GetTicketQrHandler {
     private readonly getTicketByCodeUseCase: GetTicketByCodeUseCase;

@@ -1,77 +1,77 @@
 import type { Application } from "express";
 
-import { GetEventsUseCase } from "../Features/events/Application/getEventsUseCase.js";
-import { GetEventByIdUseCase } from "../Features/events/Application/getEventByIdUseCase.js";
 import { CreateEventUseCase } from "../Features/events/Application/createEventUseCase.js";
-import { UpdateEventUseCase } from "../Features/events/Application/updateEventUseCase.js";
+import { GetEventByIdUseCase } from "../Features/events/Application/getEventByIdUseCase.js";
+import { GetEventsUseCase } from "../Features/events/Application/getEventsUseCase.js";
 import { ToggleEventStatusUseCase } from "../Features/events/Application/toggleEventStatusUseCase.js";
+import { UpdateEventUseCase } from "../Features/events/Application/updateEventUseCase.js";
 
-import { GetEventsHandler } from "../Features/events/infrastructure/handlers/getEventsHandler.js";
-import { GetEventByIdHandler } from "../Features/events/infrastructure/handlers/getEventByIdHandler.js";
 import { CreateEventHandler } from "../Features/events/infrastructure/handlers/createEventHandler.js";
-import { UpdateEventHandler } from "../Features/events/infrastructure/handlers/updateEventHandler.js";
+import { GetEventByIdHandler } from "../Features/events/infrastructure/handlers/getEventByIdHandler.js";
+import { GetEventsHandler } from "../Features/events/infrastructure/handlers/getEventsHandler.js";
 import { ToggleEventStatusHandler } from "../Features/events/infrastructure/handlers/toggleEventStatusHandler.js";
+import { UpdateEventHandler } from "../Features/events/infrastructure/handlers/updateEventHandler.js";
 
 import { EventController } from "../Features/events/infrastructure/eventController.js";
 import { createEventsRoutes } from "../Features/events/infrastructure/Routes/eventsRoutes.js";
 
 import { MySQLEventRepository } from "../Features/events/infrastructure/Repository/mysql.js";
 
-import { GetPhasesByEventIdUseCase } from "../Features/phases/Application/getPhasesByEventIdUseCase.js";
 import { CreatePhaseUseCase } from "../Features/phases/Application/createPhaseUseCase.js";
-import { UpdatePhaseUseCase } from "../Features/phases/Application/updatePhaseUseCase.js";
+import { GetPhasesByEventIdUseCase } from "../Features/phases/Application/getPhasesByEventIdUseCase.js";
 import { TogglePhaseStatusUseCase } from "../Features/phases/Application/togglePhaseStatusUseCase.js";
+import { UpdatePhaseUseCase } from "../Features/phases/Application/updatePhaseUseCase.js";
 
-import { GetPhasesByEventIdHandler } from "../Features/phases/infrastructure/handlers/getPhasesByEventIdHandler.js";
 import { CreatePhaseHandler } from "../Features/phases/infrastructure/handlers/createPhaseHandler.js";
-import { UpdatePhaseHandler } from "../Features/phases/infrastructure/handlers/updatePhaseHandler.js";
+import { GetPhasesByEventIdHandler } from "../Features/phases/infrastructure/handlers/getPhasesByEventIdHandler.js";
 import { TogglePhaseStatusHandler } from "../Features/phases/infrastructure/handlers/togglePhaseStatusHandler.js";
+import { UpdatePhaseHandler } from "../Features/phases/infrastructure/handlers/updatePhaseHandler.js";
 
-import { PhaseController } from "../Features/phases/infrastructure/phaseController.js";
-import { MySQLPhaseRepository } from "../Features/phases/infrastructure/Repository/mysql.js";
-import { registerPhasesRoutes } from "../Features/phases/infrastructure/phasesRouter.js";
+import { CreateClientUseCase } from "../Features/clients/Application/createClientUseCase.js";
 import { GetClientByIdUseCase } from "../Features/clients/Application/getClientByIdUseCase.js";
 import { GetClientByPhoneUseCase } from "../Features/clients/Application/getClientByPhoneUseCase.js";
-import { CreateClientUseCase } from "../Features/clients/Application/createClientUseCase.js";
 import { GetClientsUseCase } from "../Features/clients/Application/getClientsUseCase.js";
+import { PhaseController } from "../Features/phases/infrastructure/phaseController.js";
+import { registerPhasesRoutes } from "../Features/phases/infrastructure/phasesRouter.js";
+import { MySQLPhaseRepository } from "../Features/phases/infrastructure/Repository/mysql.js";
 
-import { GetClientsHandler } from "../Features/clients/infrastructure/handlers/getClientsHandler.js";
-import { GetClientByIdHandler } from "../Features/clients/infrastructure/handlers/getClientByIdHandler.js";
-import { SearchClientByPhoneHandler } from "../Features/clients/infrastructure/handlers/searchClientByPhoneHandler.js";
 import { CreateClientHandler } from "../Features/clients/infrastructure/handlers/createClientHandler.js";
+import { GetClientByIdHandler } from "../Features/clients/infrastructure/handlers/getClientByIdHandler.js";
+import { GetClientsHandler } from "../Features/clients/infrastructure/handlers/getClientsHandler.js";
+import { SearchClientByPhoneHandler } from "../Features/clients/infrastructure/handlers/searchClientByPhoneHandler.js";
 
 import { ClientController } from "../Features/clients/infrastructure/clientController.js";
-import { createClientsRoutes } from "../Features/clients/infrastructure/Routes/clientsRoutes.js";
 import { MySQLClientRepository } from "../Features/clients/infrastructure/Repository/mysql.js";
+import { createClientsRoutes } from "../Features/clients/infrastructure/Routes/clientsRoutes.js";
 
-import { SellTicketUseCase } from "../Features/tickets/Application/sellTicketUseCase.js";
-import { GetTicketByCodeUseCase } from "../Features/tickets/Application/getTicketByCodeUseCase.js";
-import { MarkTicketAsUsedUseCase } from "../Features/tickets/Application/markTicketAsUsedUseCase.js";
+import { WhatsappService } from "../Core/Whatsapp/whatsappService.js";
 import { DeleteTicketByCodeUseCase } from "../Features/tickets/Application/deleteTicketByCodeUseCase.js";
+import { GetExpiredActiveTicketsUseCase } from "../Features/tickets/Application/getExpiredActiveTicketsUseCase.js";
+import { GetTicketByCodeUseCase } from "../Features/tickets/Application/getTicketByCodeUseCase.js";
 import { GetTicketsByEventIdUseCase } from "../Features/tickets/Application/getTicketsByEventIdUseCase.js";
 import { GetTicketsByRpIdUseCase } from "../Features/tickets/Application/getTicketsByRpIdUseCase.js";
-import { GetExpiredActiveTicketsUseCase } from "../Features/tickets/Application/getExpiredActiveTicketsUseCase.js";
-import { WhatsappService } from "../Core/Whatsapp/whatsappService.js";
+import { MarkTicketAsUsedUseCase } from "../Features/tickets/Application/markTicketAsUsedUseCase.js";
+import { SellTicketUseCase } from "../Features/tickets/Application/sellTicketUseCase.js";
 
-import { SellTicketHandler } from "../Features/tickets/infrastructure/handlers/sellTicketHandler.js";
-import { GetTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/getTicketByCodeHandler.js";
-import { MarkTicketAsUsedHandler } from "../Features/tickets/infrastructure/handlers/markTicketAsUsedHandler.js";
 import { DeleteTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/deleteTicketByCodeHandler.js";
+import { GetExpiredActiveTicketsHandler } from "../Features/tickets/infrastructure/handlers/getExpiredActiveTicketsHandler.js";
+import { GetTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/getTicketByCodeHandler.js";
+import { GetTicketQrHandler } from "../Features/tickets/infrastructure/handlers/getTicketQrHandler.js";
 import { GetTicketsByEventIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByEventIdHandler.js";
 import { GetTicketsByRpIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByRpIdHandler.js";
-import { GetExpiredActiveTicketsHandler } from "../Features/tickets/infrastructure/handlers/getExpiredActiveTicketsHandler.js";
-import { GetTicketQrHandler } from "../Features/tickets/infrastructure/handlers/getTicketQrHandler.js";
+import { MarkTicketAsUsedHandler } from "../Features/tickets/infrastructure/handlers/markTicketAsUsedHandler.js";
+import { SellTicketHandler } from "../Features/tickets/infrastructure/handlers/sellTicketHandler.js";
 
-import { TicketController } from "../Features/tickets/infrastructure/ticketController.js";
-import { createTicketsRoutes } from "../Features/tickets/infrastructure/Routes/ticketsRoutes.js";
 import { MySQLTicketRepository } from "../Features/tickets/infrastructure/Repository/mysql.js";
+import { createTicketsRoutes } from "../Features/tickets/infrastructure/Routes/ticketsRoutes.js";
+import { TicketController } from "../Features/tickets/infrastructure/ticketController.js";
 
 import { MetricsService } from "../Features/metrics/Application/metricsService.js";
-import { GetOverallMetricsHandler } from "../Features/metrics/infrastructure/handlers/getOverallMetricsHandler.js";
-import { GetRpMetricsHandler } from "../Features/metrics/infrastructure/handlers/getRpMetricsHandler.js";
 import { GetEventMetricsHandler } from "../Features/metrics/infrastructure/handlers/getEventMetricsHandler.js";
 import { GetEventPhaseMetricsHandler } from "../Features/metrics/infrastructure/handlers/getEventPhaseMetricsHandler.js";
 import { GetEventRpMetricsHandler } from "../Features/metrics/infrastructure/handlers/getEventRpMetricsHandler.js";
+import { GetOverallMetricsHandler } from "../Features/metrics/infrastructure/handlers/getOverallMetricsHandler.js";
+import { GetRpMetricsHandler } from "../Features/metrics/infrastructure/handlers/getRpMetricsHandler.js";
 import { MetricsController } from "../Features/metrics/infrastructure/metricsController.js";
 import { createMetricsRoutes } from "../Features/metrics/infrastructure/Routes/metricsRoutes.js";
 

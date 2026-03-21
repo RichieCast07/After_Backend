@@ -1,5 +1,5 @@
-import type { OverallMetrics, RpMetrics, EventMetrics, PhaseMetrics, EventRpMetrics } from "../Domain/Data/metrics.js";
 import db from "../../../Core/db.js";
+import type { EventMetrics, EventRpMetrics, OverallMetrics, PhaseMetrics, RpMetrics } from "../Domain/Data/metrics.js";
 
 export class MetricsService {
     async getOverallMetrics(): Promise<OverallMetrics> {
@@ -58,8 +58,10 @@ export class MetricsService {
                     e.id as evento_id,
                     e.nombre,
                     COUNT(b.id) as boletos_vendidos,
-                    SUM(b.precio) as ingresos_totales,
-                    SUM(b.comision_rp) as comisiones_rp
+                    COALESCE(SUM(b.precio), 0) as ingresos_totales,
+                    COALESCE(SUM(b.comision_rp), 0) as comisiones_rp,
+                    COALESCE(SUM(CASE WHEN b.estado = 'ACTIVO' THEN 1 ELSE 0 END), 0) as boletos_activos,
+                    COALESCE(SUM(CASE WHEN b.estado = 'USADO' THEN 1 ELSE 0 END), 0) as boletos_usados
                  FROM eventos e
                  LEFT JOIN boletos b ON e.id = b.evento_id
                  WHERE e.id = ?

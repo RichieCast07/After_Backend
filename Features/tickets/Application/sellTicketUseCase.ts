@@ -33,7 +33,7 @@ export class SellTicketUseCase {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.ticketTypeRepository = ticketTypeRepository;
-        this.whatsappService = whatsappService;
+        //this.whatsappService = whatsappService;
     }
 
     async execute(ticket: CreateTicketDTO): Promise<Ticket> {

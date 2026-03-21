@@ -22,6 +22,8 @@ export interface EventMetrics {
     boletos_vendidos: number;
     ingresos_totales: number;
     comisiones_rp: number;
+    boletos_activos: number;
+    boletos_usados: number;
 }
 
 export interface PhaseMetrics {

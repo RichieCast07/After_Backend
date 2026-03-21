@@ -1,8 +1,8 @@
-import type { Event } from "../Domain/Data/event.js";
-import type { EventRepository } from "../Domain/Repository/eventRepository.js";
-import type { CreateEventDTO } from "../Domain/Data/createEventDTO.js";
 import type { PhaseRepository } from "../../phases/Domain/Repository/phaseRepository.js";
 import type { TicketTypeRepository } from "../../ticketTypes/Domain/Repository/ticketTypeRepository.js";
+import type { CreateEventDTO } from "../Domain/Data/createEventDTO.js";
+import type { Event } from "../Domain/Data/event.js";
+import type { EventRepository } from "../Domain/Repository/eventRepository.js";
 
 export class CreateEventUseCase {
     private readonly eventRepository: EventRepository;

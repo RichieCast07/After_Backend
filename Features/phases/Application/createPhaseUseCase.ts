@@ -1,7 +1,7 @@
+import type { TicketTypeRepository } from "../../ticketTypes/Domain/Repository/ticketTypeRepository.js";
+import type { CreatePhaseDTO } from "../Domain/Data/createPhaseDTO.js";
 import type { Phase } from "../Domain/Data/phase.js";
 import type { PhaseRepository } from "../Domain/Repository/phaseRepository.js";
-import type { CreatePhaseDTO } from "../Domain/Data/createPhaseDTO.js";
-import type { TicketTypeRepository } from "../../ticketTypes/Domain/Repository/ticketTypeRepository.js";
 
 export class CreatePhaseUseCase {
     private readonly phaseRepository: PhaseRepository;

@@ -1,7 +1,7 @@
+import db from "../../../../Core/db.js";
 import type { Client } from "../../Domain/Data/client.js";
 import type { CreateClientDTO } from "../../Domain/Data/createClientDTO.js";
 import { ClientRepository } from "../../Domain/Repository/clientRepository.js";
-import db from "../../../../Core/db.js";
 
 export class MySQLClientRepository extends ClientRepository {
     async getClients(): Promise<Client[]> {
@@ -9,6 +9,29 @@ export class MySQLClientRepository extends ClientRepository {
         try {
             const [rows] = await connection.query(
                 "SELECT id, nombre_completo, telefono, fecha_registro FROM clientes"
+            );
+            return rows as Client[];
+        } finally {
+            connection.release();
+        }
+    }
+
+    async getClientsPortfolioForCsv(): Promise<Client[]> {
+        const connection = await db.pool.getConnection();
+        try {
+            const [rows] = await connection.query(
+                `SELECT c.id, c.nombre_completo, c.telefono, c.fecha_registro,
+                        b.codigo AS codigo_boleto,
+                        b.tipo_boleto,
+                        u.nombre_completo AS rp_nombre,
+                        e.nombre AS evento_nombre,
+                        b.precio AS precio_compra,
+                        b.fecha_venta
+                 FROM clientes c
+                 LEFT JOIN boletos b ON b.cliente_id = c.id
+                 LEFT JOIN usuarios u ON u.id = b.rp_id
+                 LEFT JOIN eventos e ON e.id = b.evento_id
+                 ORDER BY c.id ASC, b.fecha_venta DESC`
             );
             return rows as Client[];
         } finally {

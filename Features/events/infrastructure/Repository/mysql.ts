@@ -1,9 +1,9 @@
-import type { Event } from "../../Domain/Data/event.js";
+import { randomBytes } from "node:crypto";
+import db from "../../../../Core/db.js";
 import type { CreateEventDTO } from "../../Domain/Data/createEventDTO.js";
+import type { Event } from "../../Domain/Data/event.js";
 import type { UpdateEventDTO } from "../../Domain/Data/updateEventDTO.js";
 import { EventRepository } from "../../Domain/Repository/eventRepository.js";
-import db from "../../../../Core/db.js";
-import { randomBytes } from "node:crypto";
 
 export class MySQLEventRepository extends EventRepository {
     private generateEventCode(): string {

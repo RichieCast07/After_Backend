@@ -16,6 +16,7 @@ GET    /clients                                  → Listar clientes
 GET    /clients/:id                            → Detalle de cliente
 POST   /clients                                 → Crear cliente
 GET    /clients/search?telefono=                → Buscar por teléfono
+GET    /clients/export/csv                      → Descargar cartera CSV (incluye RP, evento y precio de compra)
 
 TICKETS
 POST   /tickets                                 → Vender boleto

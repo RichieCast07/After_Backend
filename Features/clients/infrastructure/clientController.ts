@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import type { GetClientsHandler } from "./handlers/getClientsHandler.js";
-import type { GetClientByIdHandler } from "./handlers/getClientByIdHandler.js";
-import type { SearchClientByPhoneHandler } from "./handlers/searchClientByPhoneHandler.js";
-import type { CreateClientHandler } from "./handlers/createClientHandler.js";
 import type { ClientRepository } from "../Domain/Repository/clientRepository.js";
+import type { CreateClientHandler } from "./handlers/createClientHandler.js";
+import type { GetClientByIdHandler } from "./handlers/getClientByIdHandler.js";
+import type { GetClientsHandler } from "./handlers/getClientsHandler.js";
+import type { SearchClientByPhoneHandler } from "./handlers/searchClientByPhoneHandler.js";
 
 export class ClientController {
     private readonly getClientsHandler: GetClientsHandler;
@@ -44,8 +44,52 @@ export class ClientController {
 
     async downloadClientsCsv(req: Request, res: Response): Promise<void> {
         try {
-            const clients = await this.clientRepository.getClients();
-            const headers = ["id", "nombre_completo", "telefono", "fecha_registro"];
+            const clients = await this.clientRepository.getClientsPortfolioForCsv();
+            const formatDateForCsv = (dateValue: Date | string | null | undefined): string => {
+                if (!dateValue) {
+                    return "";
+                }
+
+                const parsedDate = new Date(dateValue);
+                if (Number.isNaN(parsedDate.getTime())) {
+                    return "";
+                }
+
+                return parsedDate.toLocaleString("es-MX", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                });
+            };
+
+            const formatCurrencyForCsv = (amount: number | null | undefined): string => {
+                if (amount == null || !Number.isFinite(Number(amount))) {
+                    return "";
+                }
+
+                return Number(amount).toLocaleString("es-MX", {
+                    style: "currency",
+                    currency: "MXN",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                });
+            };
+
+            const headers = [
+                "ID Cliente",
+                "Nombre completo",
+                "Teléfono",
+                "Fecha de registro",
+                "Código de boleto",
+                "Tipo de boleto",
+                "RP",
+                "Evento",
+                "Precio pagado",
+                "Fecha de venta"
+            ];
 
             const csvLines = [
                 headers.join(","),
@@ -54,7 +98,13 @@ export class ClientController {
                         String(client.id),
                         String(client.nombre_completo ?? ""),
                         String(client.telefono ?? ""),
-                        client.fecha_registro ? new Date(client.fecha_registro).toISOString() : ""
+                        formatDateForCsv(client.fecha_registro),
+                        String(client.codigo_boleto ?? ""),
+                        String(client.tipo_boleto ?? ""),
+                        String(client.rp_nombre ?? ""),
+                        String(client.evento_nombre ?? ""),
+                        formatCurrencyForCsv(client.precio_compra),
+                        formatDateForCsv(client.fecha_venta)
                     ];
 
                     return values

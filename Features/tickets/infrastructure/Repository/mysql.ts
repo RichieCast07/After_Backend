@@ -1,7 +1,7 @@
-import type { Ticket } from "../../Domain/Data/ticket.js";
-import type { CreateTicketDTO } from "../../Domain/Data/createTicketDTO.js";
-import { TicketRepository } from "../../Domain/Repository/ticketRepository.js";
 import db from "../../../../Core/db.js";
+import type { CreateTicketDTO } from "../../Domain/Data/createTicketDTO.js";
+import type { Ticket } from "../../Domain/Data/ticket.js";
+import { TicketRepository } from "../../Domain/Repository/ticketRepository.js";
 
 export class MySQLTicketRepository extends TicketRepository {
     async createTicket(ticket: CreateTicketDTO): Promise<Ticket> {

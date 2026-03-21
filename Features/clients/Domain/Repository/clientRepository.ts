@@ -4,6 +4,8 @@ import type { CreateClientDTO } from "../Data/createClientDTO.js";
 export abstract class ClientRepository {
     abstract getClients(): Promise<Client[]>;
 
+    abstract getClientsPortfolioForCsv(): Promise<Client[]>;
+
     abstract getClientById(clientId: number): Promise<Client | null>;
 
     abstract getClientByPhone(phone: string): Promise<Client | null>;

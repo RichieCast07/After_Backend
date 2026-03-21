@@ -4,12 +4,17 @@ GET    /events/:id              → Detalle de un evento
 POST   /events                  → Crear nuevo evento
 PUT    /events/:id              → Editar evento
 PATCH  /events/:id/toggle       → Activar / desactivar evento
+GET    /events/:eventId/ticket-types                         → Listar tipos de boleto del evento
+POST   /events/:eventId/ticket-types                         → Crear tipo de boleto para el evento
+PUT    /events/:eventId/ticket-types/:ticketTypeId           → Editar tipo de boleto (nombre/estado)
 
 PHASES
 GET    /events/:eventId/phases/:phaseId        → Listar fases de un evento
 POST   /events/:eventId/phases                 → Crear fase
 PUT    /events/:eventId/phases/:phaseId        → Editar fase
 PATCH  /events/:eventId/phases/:phaseId/toggle → Activar / desactivar fase
+GET    /events/:eventId/phases/:phaseId/ticket-types                    → Precios por tipo en la fase
+PUT    /events/:eventId/phases/:phaseId/ticket-types/:ticketTypeId      → Actualizar precio por tipo en fase
 
 CLIENTS
 GET    /clients                                  → Listar clientes

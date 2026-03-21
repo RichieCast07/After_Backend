@@ -68,6 +68,28 @@
     FOREIGN KEY (evento_id) REFERENCES eventos (id) ON DELETE CASCADE
   ) ENGINE = InnoDB;
 
+  -- ── Tipos de boleto por evento ─────────────────────────────
+  CREATE TABLE IF NOT EXISTS ticket_types (
+    id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    evento_id      INT UNSIGNED NOT NULL,
+    nombre         VARCHAR(50)  NOT NULL,
+    activo         TINYINT(1)   NOT NULL DEFAULT 1,
+    fecha_creacion DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_ticket_type_event_name (evento_id, nombre),
+    FOREIGN KEY (evento_id) REFERENCES eventos (id) ON DELETE CASCADE
+  ) ENGINE = InnoDB;
+
+  -- ── Precio por tipo en cada fase ───────────────────────────
+  CREATE TABLE IF NOT EXISTS phase_ticket_type_prices (
+    id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    fase_id        INT UNSIGNED NOT NULL,
+    ticket_type_id INT UNSIGNED NOT NULL,
+    precio         DECIMAL(10, 2) NOT NULL,
+    UNIQUE KEY uq_phase_ticket_type (fase_id, ticket_type_id),
+    FOREIGN KEY (fase_id) REFERENCES fases (id) ON DELETE CASCADE,
+    FOREIGN KEY (ticket_type_id) REFERENCES ticket_types (id) ON DELETE CASCADE
+  ) ENGINE = InnoDB;
+
   -- ── Clientes ─────────────────────────────────────────────────
   CREATE TABLE IF NOT EXISTS clientes (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -162,6 +184,35 @@
 
   ALTER TABLE boletos
     ADD COLUMN IF NOT EXISTS tipo_boleto VARCHAR(50) NOT NULL DEFAULT 'GENERAL';
+
+  CREATE TABLE IF NOT EXISTS ticket_types (
+    id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    evento_id      INT UNSIGNED NOT NULL,
+    nombre         VARCHAR(50)  NOT NULL,
+    activo         TINYINT(1)   NOT NULL DEFAULT 1,
+    fecha_creacion DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_ticket_type_event_name (evento_id, nombre),
+    FOREIGN KEY (evento_id) REFERENCES eventos (id) ON DELETE CASCADE
+  ) ENGINE = InnoDB;
+
+  CREATE TABLE IF NOT EXISTS phase_ticket_type_prices (
+    id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    fase_id        INT UNSIGNED NOT NULL,
+    ticket_type_id INT UNSIGNED NOT NULL,
+    precio         DECIMAL(10, 2) NOT NULL,
+    UNIQUE KEY uq_phase_ticket_type (fase_id, ticket_type_id),
+    FOREIGN KEY (fase_id) REFERENCES fases (id) ON DELETE CASCADE,
+    FOREIGN KEY (ticket_type_id) REFERENCES ticket_types (id) ON DELETE CASCADE
+  ) ENGINE = InnoDB;
+
+  INSERT IGNORE INTO ticket_types (evento_id, nombre, activo)
+  SELECT e.id, 'GENERAL', 1
+  FROM eventos e;
+
+  INSERT IGNORE INTO phase_ticket_type_prices (fase_id, ticket_type_id, precio)
+  SELECT f.id, tt.id, f.precio
+  FROM fases f
+  INNER JOIN ticket_types tt ON tt.evento_id = f.evento_id AND tt.nombre = 'GENERAL';
 
   -- 2.4c Backfill event code and enforce unique constraint
   UPDATE eventos

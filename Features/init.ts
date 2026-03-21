@@ -75,18 +75,22 @@ import { GetOverallMetricsHandler } from "../Features/metrics/infrastructure/han
 import { GetRpMetricsHandler } from "../Features/metrics/infrastructure/handlers/getRpMetricsHandler.js";
 import { MetricsController } from "../Features/metrics/infrastructure/metricsController.js";
 import { createMetricsRoutes } from "../Features/metrics/infrastructure/Routes/metricsRoutes.js";
+import { MySQLTicketTypeRepository } from "../Features/ticketTypes/infrastructure/Repository/mysql.js";
+import { createTicketTypesRoutes } from "../Features/ticketTypes/infrastructure/Routes/ticketTypesRoutes.js";
+import { TicketTypesController } from "../Features/ticketTypes/infrastructure/ticketTypesController.js";
 
 export function initFeatures(app: Application): void {
     const eventRepository = new MySQLEventRepository();
     const phaseRepository = new MySQLPhaseRepository();
     const clientRepository = new MySQLClientRepository();
     const ticketRepository = new MySQLTicketRepository();
+    const ticketTypeRepository = new MySQLTicketTypeRepository();
     const userRepository = new MySQLUserRepository();
     const metricsService = new MetricsService();
 
     const getEventsUseCase = new GetEventsUseCase(eventRepository);
     const getEventByIdUseCase = new GetEventByIdUseCase(eventRepository);
-    const createEventUseCase = new CreateEventUseCase(eventRepository, phaseRepository);
+    const createEventUseCase = new CreateEventUseCase(eventRepository, phaseRepository, ticketTypeRepository);
     const updateEventUseCase = new UpdateEventUseCase(eventRepository);
     const toggleEventStatusUseCase = new ToggleEventStatusUseCase(eventRepository);
 
@@ -106,7 +110,7 @@ export function initFeatures(app: Application): void {
     );
 
     const getPhasesByEventIdUseCase = new GetPhasesByEventIdUseCase(phaseRepository);
-    const createPhaseUseCase = new CreatePhaseUseCase(phaseRepository);
+    const createPhaseUseCase = new CreatePhaseUseCase(phaseRepository, ticketTypeRepository);
     const updatePhaseUseCase = new UpdatePhaseUseCase(phaseRepository);
     const togglePhaseStatusUseCase = new TogglePhaseStatusUseCase(phaseRepository);
 
@@ -145,7 +149,7 @@ export function initFeatures(app: Application): void {
         ? new WhatsappService()
         : undefined;
 
-    const sellTicketUseCase = new SellTicketUseCase(ticketRepository, clientRepository, phaseRepository, eventRepository, userRepository, whatsappService);
+    const sellTicketUseCase = new SellTicketUseCase(ticketRepository, clientRepository, phaseRepository, eventRepository, userRepository, ticketTypeRepository, whatsappService);
     const getTicketByCodeUseCase = new GetTicketByCodeUseCase(ticketRepository);
     const markTicketAsUsedUseCase = new MarkTicketAsUsedUseCase(ticketRepository);
     const deleteTicketByCodeUseCase = new DeleteTicketByCodeUseCase(ticketRepository);
@@ -187,16 +191,20 @@ export function initFeatures(app: Application): void {
         getEventRpMetricsHandler
     );
 
+    const ticketTypesController = new TicketTypesController(ticketTypeRepository);
+
     const eventsRoutes = createEventsRoutes(eventController);
     const clientsRoutes = createClientsRoutes(clientController);
     const ticketsRoutes = createTicketsRoutes(ticketController);
     const metricsRoutes = createMetricsRoutes(metricsController);
+    const ticketTypesRoutes = createTicketTypesRoutes(ticketTypesController);
 
     app.use("/events", eventsRoutes);
     registerPhasesRoutes(app, phaseController);
     app.use("/clients", clientsRoutes);
     app.use("/tickets", ticketsRoutes);
     app.use("/metrics", metricsRoutes);
+    app.use("/events", ticketTypesRoutes);
 
     console.log("Features initialized");
 }

@@ -3,6 +3,7 @@ import type { WhatsappService } from "../../../Core/Whatsapp/whatsappService.js"
 import type { ClientRepository } from "../../clients/Domain/Repository/clientRepository.js";
 import type { EventRepository } from "../../events/Domain/Repository/eventRepository.js";
 import type { PhaseRepository } from "../../phases/Domain/Repository/phaseRepository.js";
+import type { TicketTypeRepository } from "../../ticketTypes/Domain/Repository/ticketTypeRepository.js";
 import type { UserRepository } from "../../users/Domain/Repository/userRepository.js";
 import type { CreateTicketDTO } from "../Domain/Data/createTicketDTO.js";
 import type { Ticket } from "../Domain/Data/ticket.js";
@@ -14,6 +15,7 @@ export class SellTicketUseCase {
     private readonly phaseRepository: PhaseRepository;
     private readonly eventRepository: EventRepository;
     private readonly userRepository: UserRepository;
+    private readonly ticketTypeRepository: TicketTypeRepository;
     private readonly whatsappService?: WhatsappService;
 
     constructor(
@@ -22,6 +24,7 @@ export class SellTicketUseCase {
         phaseRepository: PhaseRepository,
         eventRepository: EventRepository,
         userRepository: UserRepository,
+        ticketTypeRepository: TicketTypeRepository,
         whatsappService?: WhatsappService
     ) {
         this.ticketRepository = ticketRepository;
@@ -29,6 +32,7 @@ export class SellTicketUseCase {
         this.phaseRepository = phaseRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.ticketTypeRepository = ticketTypeRepository;
         this.whatsappService = whatsappService;
     }
 
@@ -136,10 +140,11 @@ export class SellTicketUseCase {
             throw error;
         }
 
-        const price = Number(selectedPhase.precio);
+        const tipoBoleto = String(ticket.tipo_boleto ?? "GENERAL").trim().toUpperCase() || "GENERAL";
+        const ticketTypePrice = await this.ticketTypeRepository.getPriceForPhaseAndType(ticket.evento_id, selectedPhase.id, tipoBoleto);
+        const price = Number(ticketTypePrice ?? selectedPhase.precio);
         const commissionPercentage = Number(rpUser.comision_porcentaje ?? 10);
         const commission = Number((price * (commissionPercentage / 100)).toFixed(2));
-        const tipoBoleto = String(ticket.tipo_boleto ?? selectedPhase.nombre ?? "GENERAL").trim() || "GENERAL";
         const generatedCode = `${event.codigo_evento}-${randomBytes(6).toString("hex").toUpperCase()}`;
         const qrPayload = JSON.stringify({
             codigo: generatedCode,

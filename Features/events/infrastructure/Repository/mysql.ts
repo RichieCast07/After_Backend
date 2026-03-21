@@ -15,6 +15,7 @@ export class MySQLEventRepository extends EventRepository {
         try {
             const [rows] = await connection.query(
                 `SELECT e.id, e.nombre, e.codigo_evento, e.fecha_evento, e.lugar, e.activo, e.fecha_creacion,
+                        e.maps_url,
                         COALESCE(
                             (
                                 SELECT f.precio
@@ -38,6 +39,7 @@ export class MySQLEventRepository extends EventRepository {
         try {
             const [rows] = await connection.query(
                 `SELECT e.id, e.nombre, e.codigo_evento, e.fecha_evento, e.lugar, e.activo, e.fecha_creacion,
+                        e.maps_url,
                         COALESCE(
                             (
                                 SELECT f.precio
@@ -64,8 +66,8 @@ export class MySQLEventRepository extends EventRepository {
         try {
             const eventCode = this.generateEventCode();
             const [result] = await connection.query(
-                "INSERT INTO eventos (nombre, codigo_evento, precio_inicial, fecha_evento, lugar) VALUES (?, ?, ?, ?, ?)",
-                [event.nombre, eventCode, Number(event.precio_inicial) || 0, event.fecha_evento, event.lugar]
+                "INSERT INTO eventos (nombre, codigo_evento, precio_inicial, fecha_evento, lugar, maps_url) VALUES (?, ?, ?, ?, ?, ?)",
+                [event.nombre, eventCode, Number(event.precio_inicial) || 0, event.fecha_evento, event.lugar, event.maps_url || null]
             );
             const insertId = (result as any).insertId;
             const created = await this.getEventById(insertId);
@@ -93,6 +95,10 @@ export class MySQLEventRepository extends EventRepository {
             if (event.lugar !== undefined) {
                 updates.push("lugar = ?");
                 values.push(event.lugar);
+            }
+            if (event.maps_url !== undefined) {
+                updates.push("maps_url = ?");
+                values.push(event.maps_url || null);
             }
 
             if (updates.length === 0) {

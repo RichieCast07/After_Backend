@@ -65,6 +65,7 @@ import { SellTicketHandler } from "../Features/tickets/infrastructure/handlers/s
 import { MySQLTicketRepository } from "../Features/tickets/infrastructure/Repository/mysql.js";
 import { createTicketsRoutes } from "../Features/tickets/infrastructure/Routes/ticketsRoutes.js";
 import { TicketController } from "../Features/tickets/infrastructure/ticketController.js";
+import { MySQL as MySQLUserRepository } from "../Features/users/infrastructure/Repository/mysql.js";
 
 import { MetricsService } from "../Features/metrics/Application/metricsService.js";
 import { GetEventMetricsHandler } from "../Features/metrics/infrastructure/handlers/getEventMetricsHandler.js";
@@ -80,6 +81,7 @@ export function initFeatures(app: Application): void {
     const phaseRepository = new MySQLPhaseRepository();
     const clientRepository = new MySQLClientRepository();
     const ticketRepository = new MySQLTicketRepository();
+    const userRepository = new MySQLUserRepository();
     const metricsService = new MetricsService();
 
     const getEventsUseCase = new GetEventsUseCase(eventRepository);
@@ -143,7 +145,7 @@ export function initFeatures(app: Application): void {
         ? new WhatsappService()
         : undefined;
 
-    const sellTicketUseCase = new SellTicketUseCase(ticketRepository, clientRepository, phaseRepository, eventRepository, whatsappService);
+    const sellTicketUseCase = new SellTicketUseCase(ticketRepository, clientRepository, phaseRepository, eventRepository, userRepository, whatsappService);
     const getTicketByCodeUseCase = new GetTicketByCodeUseCase(ticketRepository);
     const markTicketAsUsedUseCase = new MarkTicketAsUsedUseCase(ticketRepository);
     const deleteTicketByCodeUseCase = new DeleteTicketByCodeUseCase(ticketRepository);

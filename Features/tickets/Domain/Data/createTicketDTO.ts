@@ -4,6 +4,7 @@ export interface CreateTicketDTO {
     cliente_telefono: string;
     rp_id: number;
     evento_id: number;
+    tipo_boleto?: string;
     cliente_id?: number;
     fase_id?: number;
     precio?: number;

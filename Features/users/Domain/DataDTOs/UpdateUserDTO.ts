@@ -4,4 +4,5 @@ export interface UpdateUserDTO {
     email?: string;
     rol?: 'admin' | 'user' | 'guest';
     activo?: boolean;
+    comision_porcentaje?: number;
 }

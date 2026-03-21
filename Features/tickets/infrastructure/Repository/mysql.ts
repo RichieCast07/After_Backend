@@ -9,14 +9,15 @@ export class MySQLTicketRepository extends TicketRepository {
         try {
             const [result] = await connection.query(
                 `INSERT INTO boletos 
-                (codigo, cliente_id, rp_id, evento_id, fase_id, precio, comision_rp, qr_payload) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                (codigo, cliente_id, rp_id, evento_id, fase_id, tipo_boleto, precio, comision_rp, qr_payload) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     ticket.codigo,
                     ticket.cliente_id,
                     ticket.rp_id,
                     ticket.evento_id,
                     ticket.fase_id,
+                    ticket.tipo_boleto ?? "GENERAL",
                     ticket.precio,
                     ticket.comision_rp,
                     ticket.qr_payload ?? null
@@ -50,11 +51,14 @@ export class MySQLTicketRepository extends TicketRepository {
         try {
             const [rows] = await connection.query(
                 `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
-                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                       b.rp_id, u.nombre_completo as rp_nombre, b.evento_id, e.nombre as evento_nombre, e.codigo_evento,
+                       b.fase_id, f.nombre as fase_nombre, b.tipo_boleto, b.precio, b.comision_rp, b.estado,
                         b.qr_payload, b.fecha_venta, b.fecha_uso
                  FROM boletos b
                  INNER JOIN clientes c ON c.id = b.cliente_id
+                   INNER JOIN usuarios u ON u.id = b.rp_id
                  INNER JOIN eventos e ON e.id = b.evento_id
+                   INNER JOIN fases f ON f.id = b.fase_id
                  WHERE b.codigo = ?`,
                 [code]
             );
@@ -94,11 +98,14 @@ export class MySQLTicketRepository extends TicketRepository {
         try {
             const [rows] = await connection.query(
                 `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
-                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                       b.rp_id, u.nombre_completo as rp_nombre, b.evento_id, e.nombre as evento_nombre, e.codigo_evento,
+                       b.fase_id, f.nombre as fase_nombre, b.tipo_boleto, b.precio, b.comision_rp, b.estado,
                         b.qr_payload, b.fecha_venta, b.fecha_uso
                  FROM boletos b
                  INNER JOIN clientes c ON c.id = b.cliente_id
+                   INNER JOIN usuarios u ON u.id = b.rp_id
                  INNER JOIN eventos e ON e.id = b.evento_id
+                   INNER JOIN fases f ON f.id = b.fase_id
                  WHERE b.evento_id = ?
                  ORDER BY b.fecha_venta DESC`,
                 [eventId]
@@ -114,11 +121,14 @@ export class MySQLTicketRepository extends TicketRepository {
         try {
             const [rows] = await connection.query(
                 `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
-                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                       b.rp_id, u.nombre_completo as rp_nombre, b.evento_id, e.nombre as evento_nombre, e.codigo_evento,
+                       b.fase_id, f.nombre as fase_nombre, b.tipo_boleto, b.precio, b.comision_rp, b.estado,
                         b.qr_payload, b.fecha_venta, b.fecha_uso
                  FROM boletos b
                  INNER JOIN clientes c ON c.id = b.cliente_id
+                   INNER JOIN usuarios u ON u.id = b.rp_id
                  INNER JOIN eventos e ON e.id = b.evento_id
+                   INNER JOIN fases f ON f.id = b.fase_id
                  WHERE b.rp_id = ?
                  ORDER BY b.fecha_venta DESC`,
                 [rpId]
@@ -134,11 +144,14 @@ export class MySQLTicketRepository extends TicketRepository {
         try {
             const [rows] = await connection.query(
                 `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
-                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                                                b.rp_id, u.nombre_completo as rp_nombre, b.evento_id, e.nombre as evento_nombre, e.codigo_evento,
+                                                b.fase_id, f.nombre as fase_nombre, b.tipo_boleto, b.precio, b.comision_rp, b.estado,
                         b.qr_payload, b.fecha_venta, b.fecha_uso
                  FROM boletos b
                  INNER JOIN clientes c ON c.id = b.cliente_id
+                                 INNER JOIN usuarios u ON u.id = b.rp_id
                  INNER JOIN eventos e ON e.id = b.evento_id
+                                 INNER JOIN fases f ON f.id = b.fase_id
                  WHERE b.estado = 'ACTIVO'
                    AND e.fecha_evento < NOW()
                  ORDER BY e.fecha_evento DESC, b.fecha_venta DESC`
@@ -168,11 +181,14 @@ export class MySQLTicketRepository extends TicketRepository {
         try {
             const [rows] = await connection.query(
                 `SELECT b.id, b.codigo, b.cliente_id, c.nombre_completo as cliente_nombre, c.telefono as cliente_telefono,
-                        b.rp_id, b.evento_id, e.codigo_evento, b.fase_id, b.precio, b.comision_rp, b.estado,
+                       b.rp_id, u.nombre_completo as rp_nombre, b.evento_id, e.nombre as evento_nombre, e.codigo_evento,
+                       b.fase_id, f.nombre as fase_nombre, b.tipo_boleto, b.precio, b.comision_rp, b.estado,
                         b.qr_payload, b.fecha_venta, b.fecha_uso
                  FROM boletos b
                  INNER JOIN clientes c ON c.id = b.cliente_id
+                   INNER JOIN usuarios u ON u.id = b.rp_id
                  INNER JOIN eventos e ON e.id = b.evento_id
+                   INNER JOIN fases f ON f.id = b.fase_id
                  WHERE b.id = ?`,
                 [ticketId]
             );

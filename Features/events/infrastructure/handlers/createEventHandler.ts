@@ -11,7 +11,7 @@ export class CreateEventHandler {
 
     async handle(req: Request, res: Response): Promise<void> {
         try {
-            const { nombre, fecha_evento, lugar, precio_inicial } = req.body as CreateEventDTO;
+            const { nombre, fecha_evento, lugar, maps_url, precio_inicial } = req.body as CreateEventDTO;
             const missingFields: string[] = [];
 
             if (!nombre) {
@@ -44,6 +44,7 @@ export class CreateEventHandler {
                 nombre,
                 fecha_evento: new Date(fecha_evento),
                 lugar,
+                maps_url,
                 precio_inicial: Number(precio_inicial)
             });
 

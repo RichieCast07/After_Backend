@@ -3,6 +3,7 @@ import type { WhatsappService } from "../../../Core/Whatsapp/whatsappService.js"
 import type { ClientRepository } from "../../clients/Domain/Repository/clientRepository.js";
 import type { EventRepository } from "../../events/Domain/Repository/eventRepository.js";
 import type { PhaseRepository } from "../../phases/Domain/Repository/phaseRepository.js";
+import type { UserRepository } from "../../users/Domain/Repository/userRepository.js";
 import type { CreateTicketDTO } from "../Domain/Data/createTicketDTO.js";
 import type { Ticket } from "../Domain/Data/ticket.js";
 import type { TicketRepository } from "../Domain/Repository/ticketRepository.js";
@@ -12,6 +13,7 @@ export class SellTicketUseCase {
     private readonly clientRepository: ClientRepository;
     private readonly phaseRepository: PhaseRepository;
     private readonly eventRepository: EventRepository;
+    private readonly userRepository: UserRepository;
     private readonly whatsappService?: WhatsappService;
 
     constructor(
@@ -19,12 +21,14 @@ export class SellTicketUseCase {
         clientRepository: ClientRepository,
         phaseRepository: PhaseRepository,
         eventRepository: EventRepository,
+        userRepository: UserRepository,
         whatsappService?: WhatsappService
     ) {
         this.ticketRepository = ticketRepository;
         this.clientRepository = clientRepository;
         this.phaseRepository = phaseRepository;
         this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
         this.whatsappService = whatsappService;
     }
 
@@ -55,6 +59,13 @@ export class SellTicketUseCase {
         if (!event.codigo_evento) {
             const error = new Error("Event code is missing");
             (error as any).statusCode = 500;
+            throw error;
+        }
+
+        const rpUser = await this.userRepository.getUsersById(ticket.rp_id);
+        if (!rpUser) {
+            const error = new Error("Selected RP does not exist");
+            (error as any).statusCode = 400;
             throw error;
         }
 
@@ -126,14 +137,18 @@ export class SellTicketUseCase {
         }
 
         const price = Number(selectedPhase.precio);
-        const commission = Number((price * 0.1).toFixed(2));
+        const commissionPercentage = Number(rpUser.comision_porcentaje ?? 10);
+        const commission = Number((price * (commissionPercentage / 100)).toFixed(2));
+        const tipoBoleto = String(ticket.tipo_boleto ?? selectedPhase.nombre ?? "GENERAL").trim() || "GENERAL";
         const generatedCode = `${event.codigo_evento}-${randomBytes(6).toString("hex").toUpperCase()}`;
         const qrPayload = JSON.stringify({
             codigo: generatedCode,
             nombre: client.nombre_completo,
             telefono: client.telefono,
             rp_id: ticket.rp_id,
+            rp_nombre: rpUser.nombre_completo,
             codigo_evento: event.codigo_evento,
+            tipo_boleto: tipoBoleto,
             estado: "ACTIVO"
         });
 
@@ -145,6 +160,7 @@ export class SellTicketUseCase {
             rp_id: ticket.rp_id,
             evento_id: ticket.evento_id,
             fase_id: selectedPhase.id,
+            tipo_boleto: tipoBoleto,
             precio: price,
             comision_rp: commission,
             qr_payload: qrPayload

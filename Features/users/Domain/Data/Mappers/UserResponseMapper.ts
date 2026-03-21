@@ -7,6 +7,7 @@ export function toUserResponseDTO(user: User): UserResponseDTO {
         nombre_completo: user.nombre_completo,
         telefono: user.telefono,
         rol_id: user.rol_id,
+        comision_porcentaje: user.comision_porcentaje,
         activo: user.activo,
         fecha_creacion: user.fecha_creacion,
         username: user.username

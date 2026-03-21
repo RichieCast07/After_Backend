@@ -5,6 +5,7 @@ export interface User {
     username: string;
     telefono: number;
     rol_id: number;
+    comision_porcentaje: number;
     activo: boolean;
     fecha_creacion: Date;
 }

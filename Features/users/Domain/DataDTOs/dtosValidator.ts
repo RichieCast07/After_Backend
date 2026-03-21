@@ -57,6 +57,13 @@ export class DTOValidators {
             errors.push('Invalid role. Must be admin (1), RP (2), or Manager (3)');
         }
 
+        if ((dto as any).comision_porcentaje !== undefined) {
+            const commission = Number((dto as any).comision_porcentaje);
+            if (!Number.isFinite(commission) || commission < 0 || commission > 100) {
+                errors.push('Comision porcentaje must be a number between 0 and 100');
+            }
+        }
+
         return errors;
     }
 
@@ -89,6 +96,13 @@ export class DTOValidators {
         const validRoles = ['admin', 'user', 'guest'];
         if (dto.rol !== undefined && !validRoles.includes(dto.rol)) {
             errors.push('Invalid role. Must be admin, user, or guest');
+        }
+
+        if (dto.comision_porcentaje !== undefined) {
+            const commission = Number(dto.comision_porcentaje);
+            if (!Number.isFinite(commission) || commission < 0 || commission > 100) {
+                errors.push('Comision porcentaje must be a number between 0 and 100');
+            }
         }
 
         return errors;

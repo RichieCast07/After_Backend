@@ -42,6 +42,36 @@ export class ClientController {
         return this.createClientHandler.handle(req, res);
     }
 
+    async downloadClientsCsv(req: Request, res: Response): Promise<void> {
+        try {
+            const clients = await this.clientRepository.getClients();
+            const headers = ["id", "nombre_completo", "telefono", "fecha_registro"];
+
+            const csvLines = [
+                headers.join(","),
+                ...clients.map((client) => {
+                    const values = [
+                        String(client.id),
+                        String(client.nombre_completo ?? ""),
+                        String(client.telefono ?? ""),
+                        client.fecha_registro ? new Date(client.fecha_registro).toISOString() : ""
+                    ];
+
+                    return values
+                        .map((value) => `"${value.replace(/"/g, '""')}"`)
+                        .join(",");
+                })
+            ];
+
+            const fileName = `clientes_${new Date().toISOString().slice(0, 10)}.csv`;
+            res.setHeader("Content-Type", "text/csv; charset=utf-8");
+            res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
+            res.status(200).send(csvLines.join("\n"));
+        } catch (error: any) {
+            res.status(500).json({ success: false, error: error.message || "Failed to generate CSV" });
+        }
+    }
+
     async deleteClient(req: Request, res: Response): Promise<void> {
         try {
             const id = Number(req.params.id);

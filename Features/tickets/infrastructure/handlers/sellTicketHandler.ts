@@ -21,6 +21,7 @@ export class SellTicketHandler {
             const rp_id = Number(body.rp_id ?? body.rpId ?? body.user_id ?? body.usuario_id);
             const evento_id = Number(body.evento_id ?? body.eventoId ?? body.event_id);
             const precio = Number(body.precio ?? body.price ?? body.precio_boleto);
+            const tipo_boleto = String(body.tipo_boleto ?? body.tipoBoleto ?? body.ticket_type ?? "GENERAL").trim();
             const missingFields: string[] = [];
 
             if (!cliente_nombre) {
@@ -53,6 +54,7 @@ export class SellTicketHandler {
                 cliente_telefono,
                 rp_id,
                 evento_id,
+                tipo_boleto: tipo_boleto || "GENERAL",
                 precio: Number.isFinite(precio) && precio > 0 ? precio : undefined
             } as CreateTicketDTO);
 

@@ -1,5 +1,5 @@
+import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import type { Request, Response, NextFunction } from 'express';
 
 // Extendemos la interfaz Request para que reconozca "req.user"
 export interface AuthRequest extends Request {

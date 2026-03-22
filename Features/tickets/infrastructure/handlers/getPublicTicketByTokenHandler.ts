@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import type { GetTicketByCodeUseCase } from "../../Application/getTicketByCodeUseCase.js";
 import { withPublicTicketUrl } from "../presenters/ticketPublicPresenter.js";
 
-export class GetTicketByCodeHandler {
+export class GetPublicTicketByTokenHandler {
     private readonly getTicketByCodeUseCase: GetTicketByCodeUseCase;
 
     constructor(getTicketByCodeUseCase: GetTicketByCodeUseCase) {
@@ -11,14 +11,14 @@ export class GetTicketByCodeHandler {
 
     async handle(req: Request, res: Response): Promise<void> {
         try {
-            const { codigo } = req.params as { codigo?: string };
-            
-            if (!codigo || typeof codigo !== 'string') {
-                res.status(400).json({ error: "Code parameter required" });
+            const { token } = req.params as { token?: string };
+
+            if (!token || typeof token !== "string") {
+                res.status(400).json({ error: "Token parameter required" });
                 return;
             }
 
-            const ticket = await this.getTicketByCodeUseCase.execute(codigo);
+            const ticket = await this.getTicketByCodeUseCase.execute(token);
 
             if (!ticket) {
                 res.status(404).json({ error: "Ticket not found" });

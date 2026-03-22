@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import type { MarkTicketAsUsedUseCase } from "../../Application/markTicketAsUsedUseCase.js";
+import { withPublicTicketUrl } from "../presenters/ticketPublicPresenter.js";
 
 export class MarkTicketAsUsedHandler {
     private readonly markTicketAsUsedUseCase: MarkTicketAsUsedUseCase;
@@ -18,7 +19,7 @@ export class MarkTicketAsUsedHandler {
             }
 
             const ticket = await this.markTicketAsUsedUseCase.execute(codigo);
-            res.json(ticket);
+            res.json(withPublicTicketUrl(ticket));
         } catch (error: any) {
             const statusCode = error?.statusCode || 500;
             const message = error?.message || String(error);

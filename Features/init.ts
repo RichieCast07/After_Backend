@@ -56,6 +56,7 @@ import { SellTicketUseCase } from "../Features/tickets/Application/sellTicketUse
 import { DeleteTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/deleteTicketByCodeHandler.js";
 import { GetExpiredActiveTicketsHandler } from "../Features/tickets/infrastructure/handlers/getExpiredActiveTicketsHandler.js";
 import { GetTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/getTicketByCodeHandler.js";
+import { GetPublicTicketByTokenHandler } from "../Features/tickets/infrastructure/handlers/getPublicTicketByTokenHandler.js";
 import { GetTicketQrHandler } from "../Features/tickets/infrastructure/handlers/getTicketQrHandler.js";
 import { GetTicketsByEventIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByEventIdHandler.js";
 import { GetTicketsByRpIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByRpIdHandler.js";
@@ -165,6 +166,7 @@ export function initFeatures(app: Application): void {
     const getTicketsByRpIdHandler = new GetTicketsByRpIdHandler(getTicketsByRpIdUseCase);
     const getExpiredActiveTicketsHandler = new GetExpiredActiveTicketsHandler(getExpiredActiveTicketsUseCase);
     const getTicketQrHandler = new GetTicketQrHandler(getTicketByCodeUseCase);
+    const getPublicTicketByTokenHandler = new GetPublicTicketByTokenHandler(getTicketByCodeUseCase);
 
     const ticketController = new TicketController(
         sellTicketHandler,
@@ -174,7 +176,8 @@ export function initFeatures(app: Application): void {
         getTicketsByRpIdHandler,
         deleteTicketByCodeHandler,
         getExpiredActiveTicketsHandler,
-        getTicketQrHandler
+        getTicketQrHandler,
+        getPublicTicketByTokenHandler
     );
 
     const getOverallMetricsHandler = new GetOverallMetricsHandler(metricsService);

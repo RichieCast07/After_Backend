@@ -26,6 +26,7 @@ GET    /clients/export/csv                      → Descargar cartera CSV (inclu
 TICKETS
 POST   /tickets                                 → Vender boleto
 GET    /tickets/:codigo                        → Buscar por código QR
+GET    /tickets/public/:token                  → Ver boleto público (sin login)
 PATCH  /tickets/:codigo/use                    → Marcar como USADO
 GET    /tickets/event/:eventId                 → Todos los boletos de un evento
 GET    /tickets/rp/:rpId                       → Boletos vendidos por un RP

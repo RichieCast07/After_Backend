@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import type { GetTicketsByEventIdUseCase } from "../../Application/getTicketsByEventIdUseCase.js";
+import { withPublicTicketUrls } from "../presenters/ticketPublicPresenter.js";
 
 export class GetTicketsByEventIdHandler {
     private readonly getTicketsByEventIdUseCase: GetTicketsByEventIdUseCase;
@@ -25,7 +26,7 @@ export class GetTicketsByEventIdHandler {
             }
 
             const tickets = await this.getTicketsByEventIdUseCase.execute(id);
-            res.json(tickets);
+            res.json(withPublicTicketUrls(tickets));
         } catch (error) {
             res.status(500).json({ error: String(error) });
         }

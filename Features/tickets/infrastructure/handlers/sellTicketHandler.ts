@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import type { SellTicketUseCase } from "../../Application/sellTicketUseCase.js";
 import type { CreateTicketDTO } from "../../Domain/Data/createTicketDTO.js";
+import { withPublicTicketUrl } from "../presenters/ticketPublicPresenter.js";
 
 export class SellTicketHandler {
     private readonly sellTicketUseCase: SellTicketUseCase;
@@ -58,7 +59,7 @@ export class SellTicketHandler {
                 precio: Number.isFinite(precio) && precio > 0 ? precio : undefined
             } as CreateTicketDTO);
 
-            res.status(201).json(ticket);
+            res.status(201).json(withPublicTicketUrl(ticket));
         } catch (error: any) {
             const statusCode = error?.statusCode || 500;
             const message = error?.message || String(error);

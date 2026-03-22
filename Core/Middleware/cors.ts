@@ -1,7 +1,7 @@
 import cors from 'cors';
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || ['http://localhost:5173', 'http://localhost:5175', 'http://localhost:5000', 'http://localhost:8100', "https://qlqk7bmz-5173.usw3.devtunnels.ms/"],
+  origin: process.env.CORS_ORIGIN || ['http://localhost:5173', "https://after-git-version-100-miguel-angels-projects-72ac395b.vercel.app/"],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],

@@ -13,6 +13,10 @@ export default function authMiddleware(req: AuthRequest, res: Response, next: Ne
   }
 
   const token = authHeader.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ message: 'Authorization token missing' });
+  }
+
   const secret = process.env.JWT_SECRET || 'dev-secret';
 
   try {

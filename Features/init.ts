@@ -55,8 +55,8 @@ import { SellTicketUseCase } from "../Features/tickets/Application/sellTicketUse
 
 import { DeleteTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/deleteTicketByCodeHandler.js";
 import { GetExpiredActiveTicketsHandler } from "../Features/tickets/infrastructure/handlers/getExpiredActiveTicketsHandler.js";
-import { GetTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/getTicketByCodeHandler.js";
 import { GetPublicTicketByTokenHandler } from "../Features/tickets/infrastructure/handlers/getPublicTicketByTokenHandler.js";
+import { GetTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/getTicketByCodeHandler.js";
 import { GetTicketQrHandler } from "../Features/tickets/infrastructure/handlers/getTicketQrHandler.js";
 import { GetTicketsByEventIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByEventIdHandler.js";
 import { GetTicketsByRpIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByRpIdHandler.js";

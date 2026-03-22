@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import type { DeleteTicketByCodeHandler } from "./handlers/deleteTicketByCodeHandler.js";
 import type { GetExpiredActiveTicketsHandler } from "./handlers/getExpiredActiveTicketsHandler.js";
-import type { GetTicketByCodeHandler } from "./handlers/getTicketByCodeHandler.js";
 import type { GetPublicTicketByTokenHandler } from "./handlers/getPublicTicketByTokenHandler.js";
+import type { GetTicketByCodeHandler } from "./handlers/getTicketByCodeHandler.js";
 import type { GetTicketQrHandler } from "./handlers/getTicketQrHandler.js";
 import type { GetTicketsByEventIdHandler } from "./handlers/getTicketsByEventIdHandler.js";
 import type { GetTicketsByRpIdHandler } from "./handlers/getTicketsByRpIdHandler.js";

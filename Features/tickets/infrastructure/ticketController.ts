@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import type { DeleteTicketByCodeHandler } from "./handlers/deleteTicketByCodeHandler.js";
 import type { GetExpiredActiveTicketsHandler } from "./handlers/getExpiredActiveTicketsHandler.js";
+import type { GetPublicTicketByTokenHandler } from "./handlers/getPublicTicketByTokenHandler.js";
 import type { GetTicketByCodeHandler } from "./handlers/getTicketByCodeHandler.js";
 import type { GetTicketQrHandler } from "./handlers/getTicketQrHandler.js";
 import type { GetTicketsByEventIdHandler } from "./handlers/getTicketsByEventIdHandler.js";
@@ -17,6 +18,7 @@ export class TicketController {
     private readonly deleteTicketByCodeHandler: DeleteTicketByCodeHandler;
     private readonly getExpiredActiveTicketsHandler: GetExpiredActiveTicketsHandler;
     private readonly getTicketQrHandler: GetTicketQrHandler;
+    private readonly getPublicTicketByTokenHandler: GetPublicTicketByTokenHandler;
 
     constructor(
         sellTicketHandler: SellTicketHandler,
@@ -26,7 +28,8 @@ export class TicketController {
         getTicketsByRpIdHandler: GetTicketsByRpIdHandler,
         deleteTicketByCodeHandler: DeleteTicketByCodeHandler,
         getExpiredActiveTicketsHandler: GetExpiredActiveTicketsHandler,
-        getTicketQrHandler: GetTicketQrHandler
+        getTicketQrHandler: GetTicketQrHandler,
+        getPublicTicketByTokenHandler: GetPublicTicketByTokenHandler
     ) {
         this.sellTicketHandler = sellTicketHandler;
         this.getTicketByCodeHandler = getTicketByCodeHandler;
@@ -36,6 +39,7 @@ export class TicketController {
         this.deleteTicketByCodeHandler = deleteTicketByCodeHandler;
         this.getExpiredActiveTicketsHandler = getExpiredActiveTicketsHandler;
         this.getTicketQrHandler = getTicketQrHandler;
+        this.getPublicTicketByTokenHandler = getPublicTicketByTokenHandler;
     }
 
     sellTicket(req: Request, res: Response): Promise<void> {
@@ -68,5 +72,9 @@ export class TicketController {
 
     getTicketQr(req: Request, res: Response): Promise<void> {
         return this.getTicketQrHandler.handle(req, res);
+    }
+
+    getPublicTicketByToken(req: Request, res: Response): Promise<void> {
+        return this.getPublicTicketByTokenHandler.handle(req, res);
     }
 }

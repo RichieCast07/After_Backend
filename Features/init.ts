@@ -1,21 +1,21 @@
 import type { Application } from "express";
 
-import { CreateEventUseCase } from "../Features/events/Application/createEventUseCase.js";
-import { GetEventByIdUseCase } from "../Features/events/Application/getEventByIdUseCase.js";
-import { GetEventsUseCase } from "../Features/events/Application/getEventsUseCase.js";
-import { ToggleEventStatusUseCase } from "../Features/events/Application/toggleEventStatusUseCase.js";
-import { UpdateEventUseCase } from "../Features/events/Application/updateEventUseCase.js";
+import { CreateEventUseCase } from "../Features/Events/Application/createEventUseCase.js";
+import { GetEventByIdUseCase } from "../Features/Events/Application/getEventByIdUseCase.js";
+import { GetEventsUseCase } from "../Features/Events/Application/getEventsUseCase.js";
+import { ToggleEventStatusUseCase } from "../Features/Events/Application/toggleEventStatusUseCase.js";
+import { UpdateEventUseCase } from "../Features/Events/Application/updateEventUseCase.js";
 
-import { CreateEventHandler } from "../Features/events/infrastructure/handlers/createEventHandler.js";
-import { GetEventByIdHandler } from "../Features/events/infrastructure/handlers/getEventByIdHandler.js";
-import { GetEventsHandler } from "../Features/events/infrastructure/handlers/getEventsHandler.js";
-import { ToggleEventStatusHandler } from "../Features/events/infrastructure/handlers/toggleEventStatusHandler.js";
-import { UpdateEventHandler } from "../Features/events/infrastructure/handlers/updateEventHandler.js";
+import { CreateEventHandler } from "../Features/Events/Infrastructure/handlers/createEventHandler.js";
+import { GetEventByIdHandler } from "../Features/Events/Infrastructure/handlers/getEventByIdHandler.js";
+import { GetEventsHandler } from "../Features/Events/Infrastructure/handlers/getEventsHandler.js";
+import { ToggleEventStatusHandler } from "../Features/Events/Infrastructure/handlers/toggleEventStatusHandler.js";
+import { UpdateEventHandler } from "../Features/Events/Infrastructure/handlers/updateEventHandler.js";
 
-import { EventController } from "../Features/events/infrastructure/eventController.js";
-import { createEventsRoutes } from "../Features/events/infrastructure/Routes/eventsRoutes.js";
+import { EventController } from "../Features/Events/Infrastructure/eventController.js";
+import { createEventsRoutes } from "../Features/Events/Infrastructure/Routes/eventsRoutes.js";
 
-import { MySQLEventRepository } from "../Features/events/infrastructure/Repository/mysql.js";
+import { MySQLEventRepository } from "../Features/Events/Infrastructure/Repository/mysql.js";
 
 import { CreatePhaseUseCase } from "../Features/phases/Application/createPhaseUseCase.js";
 import { GetPhasesByEventIdUseCase } from "../Features/phases/Application/getPhasesByEventIdUseCase.js";
@@ -55,6 +55,7 @@ import { SellTicketUseCase } from "../Features/tickets/Application/sellTicketUse
 
 import { DeleteTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/deleteTicketByCodeHandler.js";
 import { GetExpiredActiveTicketsHandler } from "../Features/tickets/infrastructure/handlers/getExpiredActiveTicketsHandler.js";
+import { GetPublicTicketByTokenHandler } from "../Features/tickets/infrastructure/handlers/getPublicTicketByTokenHandler.js";
 import { GetTicketByCodeHandler } from "../Features/tickets/infrastructure/handlers/getTicketByCodeHandler.js";
 import { GetTicketQrHandler } from "../Features/tickets/infrastructure/handlers/getTicketQrHandler.js";
 import { GetTicketsByEventIdHandler } from "../Features/tickets/infrastructure/handlers/getTicketsByEventIdHandler.js";
@@ -165,6 +166,7 @@ export function initFeatures(app: Application): void {
     const getTicketsByRpIdHandler = new GetTicketsByRpIdHandler(getTicketsByRpIdUseCase);
     const getExpiredActiveTicketsHandler = new GetExpiredActiveTicketsHandler(getExpiredActiveTicketsUseCase);
     const getTicketQrHandler = new GetTicketQrHandler(getTicketByCodeUseCase);
+    const getPublicTicketByTokenHandler = new GetPublicTicketByTokenHandler(getTicketByCodeUseCase);
 
     const ticketController = new TicketController(
         sellTicketHandler,
@@ -174,7 +176,8 @@ export function initFeatures(app: Application): void {
         getTicketsByRpIdHandler,
         deleteTicketByCodeHandler,
         getExpiredActiveTicketsHandler,
-        getTicketQrHandler
+        getTicketQrHandler,
+        getPublicTicketByTokenHandler
     );
 
     const getOverallMetricsHandler = new GetOverallMetricsHandler(metricsService);

@@ -18,7 +18,6 @@ export interface Ticket {
     comision_rp: number;
     estado: TicketState;
     qr_payload?: string;
-    public_url?: string;
     fecha_venta: Date;
     fecha_uso: Date | null;
 }

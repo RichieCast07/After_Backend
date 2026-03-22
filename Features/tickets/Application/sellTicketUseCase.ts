@@ -8,7 +8,6 @@ import type { UserRepository } from "../../users/Domain/Repository/userRepositor
 import type { CreateTicketDTO } from "../Domain/Data/createTicketDTO.js";
 import type { Ticket } from "../Domain/Data/ticket.js";
 import type { TicketRepository } from "../Domain/Repository/ticketRepository.js";
-import { buildPublicTicketUrl, signPublicTicketToken } from "../infrastructure/security/publicTicketLink.js";
 
 export class SellTicketUseCase {
     private readonly ticketRepository: TicketRepository;
@@ -179,31 +178,6 @@ export class SellTicketUseCase {
             codigo_evento: event.codigo_evento,
         }).catch((err: unknown) => console.error("[WhatsApp] Error al enviar QR:", err));
 
-        const publicTicketPayload: {
-            codigo: string;
-            rp_id: number;
-            codigo_evento: string;
-            cliente_nombre?: string;
-            cliente_telefono?: string;
-        } = {
-            codigo: createdTicket.codigo,
-            rp_id: createdTicket.rp_id,
-            codigo_evento: String(event.codigo_evento).trim().toUpperCase(),
-        };
-
-        if (createdTicket.cliente_nombre) {
-            publicTicketPayload.cliente_nombre = createdTicket.cliente_nombre;
-        }
-
-        if (createdTicket.cliente_telefono) {
-            publicTicketPayload.cliente_telefono = createdTicket.cliente_telefono;
-        }
-
-        const publicTicketToken = signPublicTicketToken(publicTicketPayload);
-
-        return {
-            ...createdTicket,
-            public_url: buildPublicTicketUrl(publicTicketToken),
-        };
+        return createdTicket;
     }
 }

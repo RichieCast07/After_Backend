@@ -4,6 +4,7 @@ export interface UserResponseDTO {
     telefono: number;
     username: string;
     rol_id: number;
+    comision_porcentaje: number;
     activo: boolean;
     fecha_creacion: Date;
 }

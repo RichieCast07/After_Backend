@@ -39,13 +39,13 @@ export class MySQL extends UserRepository {
     }
 
     async putUsers(id: number, userData: User): Promise<any> {
-        const query = 'UPDATE `usuarios` SET password_hash = ?, username = ?, nombre_completo = ?, telefono = ?, activo = ? WHERE id = ?';
+        const query = 'UPDATE `usuarios` SET password_hash = ?, username = ?, nombre_completo = ?, telefono = ?, comision_porcentaje = ?, activo = ? WHERE id = ?';
         try {
             let passwordToSave = userData.password_hash;
             if (passwordToSave !== undefined && passwordToSave !== null) {
                 passwordToSave = await bcrypt.hash(passwordToSave, 10);
             }
-            const rows = await db.fetchRows(query, [passwordToSave, userData.username, userData.nombre_completo, userData.telefono, userData.activo, id]);
+            const rows = await db.fetchRows(query, [passwordToSave, userData.username, userData.nombre_completo, userData.telefono, Number(userData.comision_porcentaje ?? 10), userData.activo, id]);
             return rows;
         } catch (err) {
             if (err instanceof Error) {
@@ -113,7 +113,7 @@ export class MySQL extends UserRepository {
     }
 
     async registerUser(user: User): Promise<any> {
-        const query = 'INSERT INTO `usuarios` (nombre_completo, telefono, username, password_hash, rol_id, activo) VALUES (?, ?, ?, ?, ?, ?)';
+        const query = 'INSERT INTO `usuarios` (nombre_completo, telefono, username, password_hash, rol_id, comision_porcentaje, activo) VALUES (?, ?, ?, ?, ?, ?, ?)';
         try {
             const saltRounds = 10;
             const hashed = await bcrypt.hash(user.password_hash, saltRounds);
@@ -123,6 +123,7 @@ export class MySQL extends UserRepository {
                 user.username,
                 hashed,
                 user.rol_id,
+                Number(user.comision_porcentaje ?? 10),
                 user.activo
             ]) as ResultSetHeader;
             
@@ -133,7 +134,8 @@ export class MySQL extends UserRepository {
                     nombre_completo: user.nombre_completo, 
                     telefono: user.telefono,
                     username: user.username,
-                    rol_id: user.rol_id
+                    rol_id: user.rol_id,
+                    comision_porcentaje: Number(user.comision_porcentaje ?? 10)
                 };
             }
             return result;

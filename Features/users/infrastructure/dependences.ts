@@ -59,7 +59,7 @@ export function init_users(app: Application): void {
         getUserByRolController
     );
 
-    // Routes
+    // Route
     const routes = productRoutes(userController);
     app.use('/users', routes);
 }
